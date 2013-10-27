@@ -1,10 +1,10 @@
-/**********************
+/***************************************************************
 Client for Feedo - prototype
 created by: Dinesh Purohit
 
 To-DOs: 
 - Please change the term companies to businesses
-*/
+****************************************************************/
 
 /**
 Accounts setting
