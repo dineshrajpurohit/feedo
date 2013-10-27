@@ -1,0 +1,111 @@
+body {
+}
+
+.main-canvas{
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing:border-box;
+	box-sizing: border-box;
+	-webkit-box-shadow: 0 1px 2px 1px rgba(0,0,0,0.25);
+	-moz-box-shadow: 0 1px 2px 1px rgba(0,0,0,0.25);
+	box-shadow: 0 1px 2px 1px rgba(0,0,0,0.25);
+	background-color: #fff;
+	-webkit-border-radius: 1px;
+	-moz-border-radius: 1px;
+	border-radius: 1px;
+	padding: 30px 30px 48px 30px;
+	height: 100%
+}
+
+#company-list{
+	list-style: none;
+	margin: 0px;
+	padding: 0;
+}
+
+#company-list li{
+	list-style: none;
+	margin: 5px;	
+}
+
+#company{
+	.rounded-corners;
+	background-color: #e5e5e5;
+	padding: 10px 10px 50px 10px;
+	margin: 5px;
+}
+
+.company-address{
+	float: right;
+	width: 20%;
+}
+
+.company-info{
+	width: 99%
+}
+
+.rounded-corners (@radius: 8px) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  -ms-border-radius: @radius;
+  -o-border-radius: @radius;
+  border-radius: @radius;
+}
+
+
+#latest_review {
+	width: 75%;
+	padding-top: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+    max-height: 2;
+}
+
+@media (-webkit-min-device-pixel-ratio: 0) {
+    #latest_review {
+        display: -webkit-box;
+        -webkit-line-clamp: 4; /* number of lines to show */
+        -webkit-box-orient: vertical;
+    }
+}
+
+#company-reviews li{
+	list-style: none;
+	.rounded-corners;
+	background-color: #e5e5e5;
+	padding: 10px 10px 50px 10px;
+	margin: 5px;
+}
+
+#review_form_company_info{
+	padding-bottom: 60px;
+	margin-bottom: 15px;
+	border-bottom: 1px solid #ccc;
+}
+
+#review_form_company_info h4{
+	float: left;
+	margin-bottom: 0;
+}
+
+#review_form_company_info strong{
+	display: block;
+	font-size: 11px;
+	margin-bottom: 5px;
+}
+
+
+.login-button{
+	float: right !important;
+}
+
+.login-btn{
+	float: right !important;
+	a{
+		text-decoration: none !important; 
+	}
+}
+
+.review-block{
+	position: relative;
+}

@@ -1,0 +1,251 @@
+<head>
+	<title>Feedo</title>
+</head>
+
+<body>
+</body>
+
+<!-- Mini Pages implementation -->
+<template name="layout">
+    <div class="container">
+	      <div class="masthead">
+	        <h3 class="muted">Feedo</h3>
+	        <div class="navbar">
+	          <div class="navbar-inner">
+	            <div class="container">
+	              <ul class="nav">
+	                <li class="navs {{navClassFor 'home'}}" ><a id="home" href="{{companiesPath}}">Home</a></li>
+	                {{#if logged_in}}
+	                {{#if isAdmin}}
+	                <li class="navs {{navClassFor 'admin'}}" ><a id="admin" href="{{admin_dashboardPath}}">Admin Dashboard</a></li>
+	                {{/if}}
+	                <li class="navs {{navClassFor 'dashboard'}}" ><a id="dashboard" href="{{dashboardPath}}">Dashboard</a></li>
+	                {{/if}}
+	                <li class="navs {{navClassFor 'about'}}" ><a id="about" href="{{aboutPath}}">About me</a></li>
+	                <li class="navs {{navClassFor 'contact'}}" ><a id="contact" href="{{contactPath}}">Contact</a></li>
+	              </ul>
+	               <div class="btn login-btn">{{loginButtons align="right"}}</div>
+	            </div>
+	          </div>
+	        </div><!-- /.navbar -->
+	      </div>
+	      <div class="main-canvas">
+      	{{{yield}}}
+			</div>
+	 </div>
+</template>
+
+<template name="search_companies">
+	<div>
+		<form class="form-search">
+  			<input type="text" class="input-xxlarge search-query" placeholder="Search: Restaurants, Food, Hospitals etc." />
+  			<button type="submit" class="btn">Search</button>
+		</form>
+	</div>
+</template>
+
+<template name="companies">
+	{{> search_companies}}
+	<ul id="company-list">
+			{{#if write_error}}
+			<div id="write_error_id" class="alert alert-error">
+			 <a id="remove_login_alert" class="close" data-dismiss="alert">×</a>  
+				{{write_error}}
+			</div>
+			{{/if}}
+		{{#each companies}}
+		<li>
+		<div id="company">
+		
+			<h4><a href="{{show_companyPath}}">{{name}}</a></h4>
+			<div class="company-info">
+				<div class="category-info">
+					$$$ | {{category}} | reviews: {{get_review_count this._id}} | 
+					
+					<a class="btn btn-inverse btn-mini" href="{{write_review_pagePath}}" >write review</a>
+					<!-- Changing this to link
+					<button class="write-review btn-inverse btn-mini">write review</button>-->
+				</div>
+				<div class="company-address pull-right">
+				<address>{{address.street}}<br/>{{address.city}}, {{address.state}}</address>
+				</div>	
+				<div id="latest_review">
+					<b>latest review:</b><br/>
+					<i>{{#if latest_review this._id}}{{latest_review this._id}}{{/if}}</i>						
+				</div>
+				<br/>
+			
+			<!-- 
+				** Removed this section because now I am thinking of sending the users 
+				** directly to write review page instead
+				{{#if write_review}}
+				<div id="write-review">
+					{{#if error}}
+					<div class="alert alert-error">{{error}}</div>
+					{{/if}}
+					<form id="submit-review">
+						<input type="text" id="review-title" placeholder="Review Title" /><br/>
+						<textarea id="review-review" row="3" cols="7" style="width: 450px; height:100px" /><br/>
+						<button type="submit" id="submitReview" class="btn btn-inverse">Submit Review</button>
+						<div class="btn" id="cancel-review">Cancel</div>
+					</form>
+				</div>
+				{{/if}}		
+				-->	
+			</div>
+	
+		</li>
+	{{/each}}
+		</ul>
+	</div>
+</template>
+
+<template name="show_company">
+	{{#with company}}
+		<div id="company_info">
+			<div id="main-info">
+				<h3>{{name}}</h3>
+				<p>******** (stars) | 
+				<span class="label">
+					{{#if reviews_count}}{{reviews_count}}{{else}}0{{/if}}
+				</span> reviews</p>
+				Category: {{category}}<br>
+				<div class="well">
+					<address>{{address.street}}<br/>{{address.city}}, {{address.state}}</address>
+					<span>{{phone}}</span><br/>
+					<span><a href="http://{{website}}" target="_blank">{{website}}</a></span>
+				</div>
+			</div><br/>
+			<div id="additional-info" class="row">
+				<div class="span4 well well-small">
+					<dl class="dl-horizontal">
+						<dt>Price Range: </dt><dd>$$</dd>
+						<dt>Delivery: </dt><dd>Yes</dd>
+						<dt>Noise Level: </dt><dd>Loud</dd>
+						<dt>Takes Reservation: </dt><dd>Yes</dd>
+					</dl>	
+				</div>
+				<div class="span4 well well-small">
+						<dl class="dl-horizontal">
+						<dt>Price Range: </dt><dd>$$</dd>
+						<dt>Delivery: </dt><dd>Yes</dd>
+						<dt>Noise Level: </dt><dd>Loud</dd>
+						<dt>Takes Reservation: </dt><dd>Yes</dd>
+				</dl>		
+				</div>
+				<div id="company-reviews" class="span9">
+					<blockquote><p>{{get_review_count this._id}} reviews as follows:
+						<a href="{{write_review_pagePath}}" class="btn btn-primary pull-right">Write Review</a></p>
+					</blockquote>
+					<ul id="review_list" class="media-list">
+						{{#if reviews this_id}}
+						{{#each reviews this._id}}
+							<li class="media">
+    							<a class="pull-left" href="#">
+      								<img class="media-object" width="64" height="64" src="http://cdn2.designbyhumans.com/img/blank-user-100.gif">
+      								<small>{{review_user user_id}}</small>
+    							</a>
+	    						<div class="media-body">
+	      							<h5 class="media-heading">{{title}} <small>({{formatDate time}}) Points: {{points}}</small></h5>
+	      							<p>{{review}}</p>
+	      						</div>	
+							</li> 
+						{{/each}}
+						{{/if}}
+					</ul>
+				</div>
+			</div>
+		</div>		
+	{{/with}}
+</template>
+
+<template name="write_review_page">
+	{{#with company}}
+	<div id="review_form">
+		<div id="review_form_company_info">
+			<h4><strong>Complete your review</strong>
+			<a href="{{show_companyPath}}">{{name}}</a></h4>
+			<address class="pull-right">
+				{{address.street}}<br/>{{address.city}}, {{address.state}} {{address.zipcode}}
+			</address>
+		</div>
+		<div id="review_form">
+			{{#if error_review}}
+				<div class="alert alert-error">{{error_review}}</div>
+			{{/if}}
+			<form id="submit-review" action="{{show_companyPath}}">
+				<input name="title" type="text" id="review-title" placeholder="Review Title" /><br/>
+				<textarea name="review" id="review-review" row="3" cols="7" style="width: 450px; height:100px" /><br/>
+				<button type="submit" id="submitReviewForm" class="btn btn-inverse">Submit Review</button>
+				<a class="btn" href="{{show_companyPath}}" id="cancel-review">Cancel</a>
+			</form>
+		</div>
+	</div>
+
+	{{/with}}
+</template>
+
+<!-- Template for Admin Dashboard -->
+<template name="admin_dashboard">
+<!--	Section for adding new company -->
+<div>
+	<button class="btn btn-inverse" id="create_biz">Add New Business</button>
+	{{#if biz_form_sucess}}
+	<div class="alert alert-sucess">	
+	 	<a id="remove_biz_alert" class="close" data-dismiss="alert">×</a>  
+		Created new Business Successfully
+	</div>
+	{{/if}}
+	{{#if create_biz_form}}
+	<div id="create_biz_form">
+		<form name="bizForm" id="bizForm">
+		  <fieldset>
+		    <legend>Create a new Business (Not doing any validation)</legend>
+		    <label>name</label>
+		    <input name="name" id="bizName" type="text" placeholder="Business Name">
+		    <label>Category</label>
+		    <input name="category" id="bizCat" type="text" placeholder="Business Category (Restaurant, Hospital)">
+		    <label>Address</label>
+		    <input name="street" id="bizStreet" type="text" placeholder="Street">
+		    <input name="city" id="bizCity" type="text" placeholder="City">
+		    <input name="state" id="bizState" type="text" placeholder="State">
+		    <input name="zipcode" id="bizZip" type="text" placeholder="Zipcode">
+		    <input name="phone" id="bizPhone" type="text" placeholder="Phone">
+		    <input name="website" id="bizSite" type="text" placeholder="Website">
+		    <br/>
+		    <button type="submit" class="btn btn-primary">Submit</button>
+		    <a class="btn" id="cancel_create_biz">Cancel</a>
+		  </fieldset>
+		</form>
+	</div>
+	{{/if}}
+</div>
+</template>	
+
+<!-- Template for User Dashboard -->
+<template name="dashboard">
+	This is user Dashboard
+</template>
+
+<!-- Templates for static pages -->
+<template name="about">
+	<h5>Feedo About Page</h5>
+</template>	
+
+<template name="contact">
+	<h5>Feedo Contact Page</h5>
+</template>	
+
+<template name="unauthorized">
+		<div class="alert alert-error alert-block">
+		<h2>401 - You are not authorized to view this page</h2>
+		<h4>Please login to access the page.</h4>
+	</div>
+</template>	
+
+<template name="notFound">
+	<div class="alert alert-error alert-block">
+		<h2>404 - Page Not found</h2>
+		<h4>Please go back to Home page <a href="{{companiesPath}}">Go to Homepage!!!</a> or navigate to a specific page from the menu: </h4>
+	</div>
+</template>
