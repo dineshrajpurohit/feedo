@@ -20,6 +20,25 @@ function insertBiz(company){
 	return true;
 }
 
+
+/**
+User Points: 
+New Review : 10 points
+**/
+function updateUserPoints(userId, reason){
+	var points = 0;
+	switch(reason){
+		case "new_review":
+			points = 10;
+			break;
+		default:
+			points = 0;
+			break;
+	}
+	console.log("points" + points);		
+	Meteor.users.update({_id:userId}, {$inc: {"profile.user_points" : points}});
+}
+
 /**
 Server Methods
 **/
@@ -28,11 +47,15 @@ Meteor.methods({
 	submitBiz: function(biz){
 		return insertBiz(biz);
 	},
-	submitReview: function(review, bizId){
+	submitReview: function(review, bizId, userId){
 		//TODO: Server side validation
-		console.log("biz0 " + bizId);
 		Reviews.insert(review);
-		Companies.update({_id:bizId},{$inc: {review_count: 1}});
+
+		//Add user points for a new review
+		updateUserPoints(userId, "new_review");
+
+		//update review count for the company
+		Companies.update({_id:bizId},{$inc: {reviews_count: 1}});
 		return bizId;
 	}
 });

@@ -6,8 +6,14 @@
 
 Accounts.onCreateUser(function(option, user){
 	var users = Meteor.users.find().fetch();
+	// Add user role
 	var role = (users.length > 0) ? "user" : "admin";
-	profile = { role: role};
+
+	// Add initial point to user when they create account 
+	// For now we giving 20 points to user when they create a new account
+	var points = 20;
+
+	profile = { role: role, user_points: points};
 	user.profile = profile;
 	return user;
 });

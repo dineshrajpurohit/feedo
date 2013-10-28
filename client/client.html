@@ -17,9 +17,9 @@
 	                <li class="navs {{navClassFor 'home'}}" ><a id="home" href="{{companiesPath}}">Home</a></li>
 	                {{#if logged_in}}
 	                {{#if isAdmin}}
-	                <li class="navs {{navClassFor 'admin'}}" ><a id="admin" href="{{admin_dashboardPath}}">Admin Dashboard</a></li>
+	                <li class="navs {{navClassFor 'admin'}}" ><a id="admin" href="{{adminDashboardPath}}">Admin Dashboard</a></li>
 	                {{/if}}
-	                <li class="navs {{navClassFor 'dashboard'}}" ><a id="dashboard" href="{{dashboardPath}}">Dashboard</a></li>
+	                <li class="navs {{navClassFor 'dashboard'}}" ><a id="dashboard" href="{{userDashboardPath}}">Dashboard</a></li>
 	                {{/if}}
 	                <li class="navs {{navClassFor 'about'}}" ><a id="about" href="{{aboutPath}}">About me</a></li>
 	                <li class="navs {{navClassFor 'contact'}}" ><a id="contact" href="{{contactPath}}">Contact</a></li>
@@ -35,17 +35,17 @@
 	 </div>
 </template>
 
-<template name="search_companies">
+<template name="searchBusiness">
 	<div>
 		<form class="form-search">
   			<input type="text" class="input-xxlarge search-query" placeholder="Search: Restaurants, Food, Hospitals etc." />
-  			<button type="submit" class="btn">Search</button>
+  			<button id="searchBusiness" type="submit" class="btn">Search</button>
 		</form>
 	</div>
 </template>
 
 <template name="companies">
-	{{> search_companies}}
+	{{> searchBusiness}}
 	<ul id="company-list">
 			{{#if write_error}}
 			<div id="write_error_id" class="alert alert-error">
@@ -57,14 +57,12 @@
 		<li>
 		<div id="company">
 		
-			<h4><a href="{{show_companyPath}}">{{name}}</a></h4>
+			<h4><a href="{{showBusinessPath}}">{{name}}</a></h4>
 			<div class="company-info">
 				<div class="category-info">
-					$$$ | {{category}} | reviews: {{get_review_count this._id}} | 
+					$$$ | {{category}} | reviews: {{get_reviews_count this._id}} | 
 					
-					<a class="btn btn-inverse btn-mini" href="{{write_review_pagePath}}" >write review</a>
-					<!-- Changing this to link
-					<button class="write-review btn-inverse btn-mini">write review</button>-->
+					<a class="btn btn-inverse btn-mini" href="{{writeReviewPath}}" >write review</a>
 				</div>
 				<div class="company-address pull-right">
 				<address>{{address.street}}<br/>{{address.city}}, {{address.state}}</address>
@@ -73,25 +71,7 @@
 					<b>latest review:</b><br/>
 					<i>{{#if latest_review this._id}}{{latest_review this._id}}{{/if}}</i>						
 				</div>
-				<br/>
-			
-			<!-- 
-				** Removed this section because now I am thinking of sending the users 
-				** directly to write review page instead
-				{{#if write_review}}
-				<div id="write-review">
-					{{#if error}}
-					<div class="alert alert-error">{{error}}</div>
-					{{/if}}
-					<form id="submit-review">
-						<input type="text" id="review-title" placeholder="Review Title" /><br/>
-						<textarea id="review-review" row="3" cols="7" style="width: 450px; height:100px" /><br/>
-						<button type="submit" id="submitReview" class="btn btn-inverse">Submit Review</button>
-						<div class="btn" id="cancel-review">Cancel</div>
-					</form>
-				</div>
-				{{/if}}		
-				-->	
+				<br/>	
 			</div>
 	
 		</li>
@@ -100,7 +80,7 @@
 	</div>
 </template>
 
-<template name="show_company">
+<template name="showBusiness">
 	{{#with company}}
 		<div id="company_info">
 			<div id="main-info">
@@ -134,8 +114,8 @@
 				</dl>		
 				</div>
 				<div id="company-reviews" class="span9">
-					<blockquote><p>{{get_review_count this._id}} reviews as follows:
-						<a href="{{write_review_pagePath}}" class="btn btn-primary pull-right">Write Review</a></p>
+					<blockquote><p>{{get_reviews_count this._id}} reviews as follows:
+						<a href="{{writeReviewPath}}" class="btn btn-primary pull-right">Write Review</a></p>
 					</blockquote>
 					<ul id="review_list" class="media-list">
 						{{#if reviews this_id}}
@@ -146,7 +126,7 @@
       								<small>{{review_user user_id}}</small>
     							</a>
 	    						<div class="media-body">
-	      							<h5 class="media-heading">{{title}} <small>({{formatDate time}}) Points: {{points}}</small></h5>
+	      							<h5 class="media-heading">{{title}} <small>({{formatDate time}}) | User points: {{getUserPoints user_id}}</small></h5>
 	      							<p>{{review}}</p>
 	      						</div>	
 							</li> 
@@ -159,12 +139,12 @@
 	{{/with}}
 </template>
 
-<template name="write_review_page">
+<template name="writeReview">
 	{{#with company}}
 	<div id="review_form">
 		<div id="review_form_company_info">
 			<h4><strong>Complete your review</strong>
-			<a href="{{show_companyPath}}">{{name}}</a></h4>
+			<a href="{{showBusinessPath}}">{{name}}</a></h4>
 			<address class="pull-right">
 				{{address.street}}<br/>{{address.city}}, {{address.state}} {{address.zipcode}}
 			</address>
@@ -173,11 +153,11 @@
 			{{#if error_review}}
 				<div class="alert alert-error">{{error_review}}</div>
 			{{/if}}
-			<form id="submit-review" action="{{show_companyPath}}">
+			<form id="submit-review" action="{{showBusinessPath}}">
 				<input name="title" type="text" id="review-title" placeholder="Review Title" /><br/>
 				<textarea name="review" id="review-review" row="3" cols="7" style="width: 450px; height:100px" /><br/>
 				<button type="submit" id="submitReviewForm" class="btn btn-inverse">Submit Review</button>
-				<a class="btn" href="{{show_companyPath}}" id="cancel-review">Cancel</a>
+				<a class="btn" href="{{showBusinessPath}}" id="cancel-review">Cancel</a>
 			</form>
 		</div>
 	</div>
@@ -186,7 +166,7 @@
 </template>
 
 <!-- Template for Admin Dashboard -->
-<template name="admin_dashboard">
+<template name="adminDashboard">
 <!--	Section for adding new company -->
 <div>
 	<button class="btn btn-inverse" id="create_biz">Add New Business</button>
@@ -223,7 +203,7 @@
 </template>	
 
 <!-- Template for User Dashboard -->
-<template name="dashboard">
+<template name="userDashboard">
 	This is user Dashboard
 </template>
 

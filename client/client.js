@@ -29,8 +29,10 @@ function setCompany(context, page){
 	var company = Companies.findOne(page_id);
 	if(company)
 		Session.set("company", company);
-	else
-		context.redirect(Meteor.unauthorizedPath());
+	
+	//This part is not working for some reason
+	//else
+	//	context.redirect(Meteor.unauthorizedPath());
 	}
 
 function authorizeUser(context, page){
@@ -66,7 +68,7 @@ Handlebars.registerHelper("navClassFor", function(nav, options){
 });
 
 // creating handlebar helper for count since it will be called by many templates
-Handlebars.registerHelper("get_review_count", function(biz){
+Handlebars.registerHelper("get_reviews_count", function(biz){
 	var latest = Reviews.find({company_id: biz}).fetch();
 	return latest.length; 
 });
@@ -77,13 +79,19 @@ Handlebars.registerHelper("review_user", function(user_id){
 	//return (userInfo.username != undefined) ? userInfo.username : "";
 });
 
+// Handlebar to get user points
+Handlebars.registerHelper("getUserPoints", function(user_id){
+	var userInfo = Meteor.users.findOne({_id: user_id},{fields: {profile: 1}});
+	return userInfo.profile.user_points;
+});
+
 // Change this to Iron Routing instead
 Meteor.pages({
 	"/" : {to: "companies"},
-	"/company/:_id" : { to: "show_company", before: setCompany},
-	"/company/:_id/review" : {to: "write_review_page", before: setCompany},
-	"/admin" : {to: "admin_dashboard", before: checkIsAdmin},
-	"/dashboard" : {to: "dashboard", before: authorizeUser},
+	"/biz/:_id" : { to: "showBusiness", before: setCompany},
+	"/biz/:_id/review" : {to: "writeReview", before: setCompany},
+	"/admin" : {to: "adminDashboard", before: checkIsAdmin},
+	"/dashboard" : {to: "userDashboard", before: authorizeUser},
 	//Static pages
 	"/401" : {to: 'unauthorized'},
 	"/404" : {to: "notFound"},
@@ -107,7 +115,7 @@ Template.layout.isAdmin = function(){
 
 Template.companies.helpers({
 	companies: function(){
-		return Companies.find({}, {sort: {review_count: -1}});
+		return Companies.find({}, {sort: {reviews_count: -1}});
 	},
 	latest_review: function(biz){
 			var latest = Reviews.find({company_id: biz},{sort: {time: -1}, limit: 1}).fetch();
@@ -126,7 +134,7 @@ Template.companies.helpers({
 });
 
 // Helpers for show company .. 
-Template.show_company.helpers({
+Template.showBusiness.helpers({
 	company: function(){
 		return Session.get("company");
 	},
@@ -136,7 +144,7 @@ Template.show_company.helpers({
 	}
 });
 
-Template.write_review_page.helpers({
+Template.writeReview.helpers({
 	company: function(){
 		return Session.get("company");
 	},
@@ -146,7 +154,7 @@ Template.write_review_page.helpers({
 });
 
 // Template helper for Admin Dashboard
-Template.admin_dashboard.helpers({
+Template.adminDashboard.helpers({
 	create_biz_form : function(){
 		return Session.get("create_biz_form_var");
 	},
@@ -161,7 +169,7 @@ function printObjArr(obj){
 	}
 }
 // Template event for Admin Dashboard
-Template.admin_dashboard.events({
+Template.adminDashboard.events({
 	'click #create_biz' : function(event, t){
 		Session.set("create_biz_form_var", true);
 	},
@@ -228,17 +236,10 @@ Template.companies.events({
 	'click #cancel-review' : function(event, t){
 		Session.set("write_review", false);
 		Validation.clear("review_error")
-	},
-	//Not using it anymore
-	'submit' :function(event, t){
-		event.preventDefault();
-		if(submitReview(Session.get("write_review"))){
-			Session.set("write_review", false);
-		}
-	}	
+	},	
 });
 
-Template.write_review_page.events({
+Template.writeReview.events({
 	'submit' :function(event, t){
 		event.preventDefault();	
 
@@ -249,12 +250,13 @@ Template.write_review_page.events({
 
 		form["company_id"] = this._id;
 		form["user_id"] = Meteor.userId();
+		form["time"] = Date.now();
 
 		if(Meteor.userId() && this._id && Validation.valid_review(form["title"], form["review"])){
-			Meteor.call("submitReview", form, this._id, function(error, data){
+			Meteor.call("submitReview", form, this._id, Meteor.userId(), function(error, data){
 				console.log();
 				if(!error && data){
-					Meteor.go("/company/" + data);
+					Meteor.go("/biz/" + data);
 				}
 			});
 		}
