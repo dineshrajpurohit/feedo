@@ -61,9 +61,9 @@ Meteor.methods({
 		else
 			return false;
 	},
-	addReviewToShortlist: function(userId, reviewId){
+	addReviewToShortlist: function(userId, reviewId, bizId){
 		//add to shortlist db
-		if(Shortlists.insert({user_id:userId, review_id: reviewId}))
+		if(Shortlists.insert({user_id:userId, company_id: bizId, review_id: reviewId}))
 			return true;
 		else
 			return false;

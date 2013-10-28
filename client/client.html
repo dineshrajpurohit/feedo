@@ -95,6 +95,7 @@
 					<span>{{phone}}</span><br/>
 					<span><a href="http://{{website}}" target="_blank">{{website}}</a></span>
 				</div>
+				</div>
 			</div><br/>
 			<div id="additional-info" class="row">
 				<div class="span4 well well-small">
@@ -111,7 +112,7 @@
 						<dt>Delivery: </dt><dd>Yes</dd>
 						<dt>Noise Level: </dt><dd>Loud</dd>
 						<dt>Takes Reservation: </dt><dd>Yes</dd>
-				</dl>		
+					</dl>		
 				</div>
 				<div id="company-reviews" class="span9">
 					<blockquote><p>{{get_reviews_count this._id}} reviews as follows:
@@ -144,7 +145,7 @@
 												 {{else}}
 	      											<div id="shortListButton">
 											   		<label>
-												      		<input id="checkShortlist" type="checkbox" value="{{this._id}}"><span>shortlist</span>
+												      		<input by="{{user_id}}" id="checkShortlist" type="checkbox" value="{{this._id}}"><span>shortlist</span>
 												   		</label>
 													</div>
 													{{/if}}

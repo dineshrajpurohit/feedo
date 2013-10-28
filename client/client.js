@@ -52,11 +52,17 @@ function checkIsAdmin(context, page){
 		context.redirect(Meteor.unauthorizedPath());
 }
 
-function checkShortlisted(userId, reviewId){
-	if(userId && reviewId){
+function checkShortlisted(userId, reviewId, bizId){
+	if(userId && reviewId && bizId){
 		return Shortlists.findOne({$and: [{review_id: reviewId}, {user_id: userId}]});
 	}else
 		return false;
+}
+
+function fadeOutAndRemove(item){
+	$(item).delay(1000).fadeOut("fast", function(){
+		$(this).remove();
+	})
 }
 
 /**
@@ -152,8 +158,9 @@ Template.showBusiness.helpers({
 	},
 	shortlisted: function(reviewId){
 		var userId = Meteor.userId();
-		if(userId && reviewId){
-			return checkShortlisted(userId, reviewId);
+		var bizId = (Session.get("company"))._id;
+		if(userId && reviewId && bizId){
+			return checkShortlisted(userId, reviewId, bizId);
 		}else
 			return false;
 	}
@@ -266,11 +273,21 @@ Template.companies.events({
 Template.showBusiness.events({
 	'click #checkShortlist': function(event, template){
 		var reviewId = template.find("#checkShortlist").value;
+		var reviewBy = $("#checkShortlist").attr("by");
 		var userId = Meteor.userId();
-		if(userId && reviewId){
-			var isSlPresent = checkShortlisted(userId, reviewId);		
+		var bizId = (Session.get("company"))._id;
+		if(userId && reviewId && bizId){
+			// if user is same as reviewer
+			if(userId == reviewBy){
+				var content = "<div class='message-error span4'>You cannot shortlist your own review</div>";
+				$(content).hide().appendTo(".rateReview").fadeIn(500);
+				fadeOutAndRemove(".message-error");			
+				return false;
+			}
+
+			var isSlPresent = checkShortlisted(userId, reviewId, bizId);		
 			if(!isSlPresent){
-				Meteor.call("addReviewToShortlist", userId, reviewId, function(error, data){
+				Meteor.call("addReviewToShortlist", userId, reviewId, bizId, function(error, data){
 					if(!error && data){
 						//console.log("Added to shortlist");
 					}
