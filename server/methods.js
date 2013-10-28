@@ -35,8 +35,7 @@ function updateUserPoints(userId, reason){
 			points = 0;
 			break;
 	}
-	console.log("points" + points);		
-	Meteor.users.update({_id:userId}, {$inc: {"profile.user_points" : points}});
+	return Meteor.users.update({_id:userId}, {$inc: {"profile.user_points" : points}});
 }
 
 /**
@@ -49,13 +48,33 @@ Meteor.methods({
 	},
 	submitReview: function(review, bizId, userId){
 		//TODO: Server side validation
-		Reviews.insert(review);
+		var review = Reviews.insert(review);
 
 		//Add user points for a new review
-		updateUserPoints(userId, "new_review");
+		var pointUpdated = updateUserPoints(userId, "new_review");
 
 		//update review count for the company
-		Companies.update({_id:bizId},{$inc: {reviews_count: 1}});
-		return bizId;
+		var companiesUpdated = Companies.update({_id:bizId},{$inc: {reviews_count: 1}});
+		
+		if(review && pointUpdated && companiesUpdated)
+			return bizId;
+		else
+			return false;
+	},
+	addReviewToShortlist: function(userId, reviewId){
+		//add to shortlist db
+		if(Shortlists.insert({user_id:userId, review_id: reviewId}))
+			return true;
+		else
+			return false;
 	}
 });
+
+
+
+
+
+
+
+
+

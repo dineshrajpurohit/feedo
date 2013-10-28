@@ -1,6 +1,7 @@
 // Companies which will be displayed
 Companies = new Meteor.Collection("companies");
 Reviews = new Meteor.Collection("reviews");
+Shortlists = new Meteor.Collection("shortlists");
 
 function printObjArr(obj){
 	for(o in obj){

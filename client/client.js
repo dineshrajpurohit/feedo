@@ -52,6 +52,13 @@ function checkIsAdmin(context, page){
 		context.redirect(Meteor.unauthorizedPath());
 }
 
+function checkShortlisted(userId, reviewId){
+	if(userId && reviewId){
+		return Shortlists.findOne({$and: [{review_id: reviewId}, {user_id: userId}]});
+	}else
+		return false;
+}
+
 /**
 Meteor Handlebar helpers
 **/
@@ -84,6 +91,7 @@ Handlebars.registerHelper("getUserPoints", function(user_id){
 	var userInfo = Meteor.users.findOne({_id: user_id},{fields: {profile: 1}});
 	return userInfo.profile.user_points;
 });
+
 
 // Change this to Iron Routing instead
 Meteor.pages({
@@ -141,6 +149,13 @@ Template.showBusiness.helpers({
 	reviews: function(biz){
 		return Reviews.find({company_id: biz},{sort: {time: -1}});
 
+	},
+	shortlisted: function(reviewId){
+		var userId = Meteor.userId();
+		if(userId && reviewId){
+			return checkShortlisted(userId, reviewId);
+		}else
+			return false;
 	}
 });
 
@@ -160,6 +175,14 @@ Template.adminDashboard.helpers({
 	},
 	biz_form_sucess : function(){
 		return Session.get("biz_form_sucess");
+	}
+});
+
+//Helper for user Dashboard
+Template.userDashboard.helpers({
+	'userShorlists' : function(){
+		var shortlists = Shortlists.find({user_id: Meteor.userId()}).fetch();
+		return shortlists.length;
 	}
 });
 
@@ -237,6 +260,27 @@ Template.companies.events({
 		Session.set("write_review", false);
 		Validation.clear("review_error")
 	},	
+});
+
+// Event from show Business template
+Template.showBusiness.events({
+	'click #checkShortlist': function(event, template){
+		var reviewId = template.find("#checkShortlist").value;
+		var userId = Meteor.userId();
+		if(userId && reviewId){
+			var isSlPresent = checkShortlisted(userId, reviewId);		
+			if(!isSlPresent){
+				Meteor.call("addReviewToShortlist", userId, reviewId, function(error, data){
+					if(!error && data){
+						//console.log("Added to shortlist");
+					}
+				});
+			}
+		}else{
+			// change this to create a login model
+			console.log("Please log in");
+		}
+	}
 });
 
 Template.writeReview.events({

@@ -69,7 +69,7 @@
 				</div>	
 				<div id="latest_review">
 					<b>latest review:</b><br/>
-					<i>{{#if latest_review this._id}}{{latest_review this._id}}{{/if}}</i>						
+					<i>{{#if latest_review this._id}}{{latest_review this._id}}{{else}} No reviews!{{/if}}</i>						
 				</div>
 				<br/>	
 			</div>
@@ -120,14 +120,38 @@
 					<ul id="review_list" class="media-list">
 						{{#if reviews this_id}}
 						{{#each reviews this._id}}
-							<li class="media">
+							<li id="" class="media">
     							<a class="pull-left" href="#">
       								<img class="media-object" width="64" height="64" src="http://cdn2.designbyhumans.com/img/blank-user-100.gif">
       								<small>{{review_user user_id}}</small>
     							</a>
 	    						<div class="media-body">
 	      							<h5 class="media-heading">{{title}} <small>({{formatDate time}}) | User points: {{getUserPoints user_id}}</small></h5>
-	      							<p>{{review}}</p>
+	      							<p>{{review}}</p><br/><br/>
+	      							<div class="extra-stuff">
+	      								<div class="rateReview">
+	      									<p>Thoughts about the review!</p>
+	      									<ul class="inline">
+	      										<li>
+	      											<a href="">Funny</a>
+	      										</li>
+	      										<li>
+	      											<a href="">Cool</a>
+	      										</li>
+	      										<li>
+	      										{{#if shortlisted this._id}}
+	      											<label class="btn btn-success disabled">&#x2713; shortlisted</label>
+												 {{else}}
+	      											<div id="shortListButton">
+											   		<label>
+												      		<input id="checkShortlist" type="checkbox" value="{{this._id}}"><span>shortlist</span>
+												   		</label>
+													</div>
+													{{/if}}
+	      										</li>
+	      									</ul>
+										</div>
+									</div>
 	      						</div>	
 							</li> 
 						{{/each}}
@@ -204,7 +228,8 @@
 
 <!-- Template for User Dashboard -->
 <template name="userDashboard">
-	This is user Dashboard
+	This is user Dashboard<br/><br/>
+	<h4>You have {{userShorlists}} shorlists. More data coming soon</h4>
 </template>
 
 <!-- Templates for static pages -->
