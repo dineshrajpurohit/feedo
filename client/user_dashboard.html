@@ -4,14 +4,39 @@
           <div class="container">
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Dashboard</a></li>
-                <li><a href="#profile">Profile</a></li>
-                <li><a href="#review">Reviews</a></li>
-                <li><a href="#statistics">Statistics</a></li>
+                <li class="{{navClassFor 'dashboard'}}"><a href="{{shortlistsPath}}">Shortlists</a></li>
+                <li class="{{navClassFor 'approved'}}"><a href="{{approvedPath}}">Approved</a></li>
+                <li class="{{navClassFor 'profile'}}"><a href="{{profilePath}}">Profile</a></li>
+                <li class="{{navClassFor 'reviews'}}"><a href="{{reviewsPath}}">Reviews</a></li>
+                <li class="{{navClassFor 'statistics'}}"><a href="{{statisticsPath}}">Statistics</a></li>
               </ul>
             </div>
           </div>
         </div>
-	This is user Dashboard<br/><br/>
-	<h4>You have {{userShorlists}} shorlists. More data coming soon</h4>
+</template>
+
+<template name="shortlists">
+  {{> userDashboard}}
+  This is user Dashboard<br/><br/>
+  <h4>You have {{userShorlists}} shorlists. More data coming soon</h4>
+</template>
+
+<template name="approved">
+  {{> userDashboard}}
+  Approved
+</template>
+
+<template name="profile">
+  {{> userDashboard}}
+  Profile
+</template>
+
+<template name="reviews">
+  {{> userDashboard}}
+  Reviews
+</template>
+
+<template name="statistics">
+  {{> userDashboard}}
+  Statistics
 </template>

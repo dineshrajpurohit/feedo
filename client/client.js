@@ -79,6 +79,10 @@ Template.navigation.isAdmin = function(){
 	}
 }
 
+Template.navigation.dashboardActive = function(){
+	return Session.get("activateDashboard");
+}
+
 /**
 
 Helpers and Event for Companies template

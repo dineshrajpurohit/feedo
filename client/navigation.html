@@ -12,17 +12,24 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="{{navClassFor 'home'}}"><a href="{{companiesPath}}">Home</a></li>
+            <li class="{{navClassFor 'home'}}"><a href="{{companiesPath}}">
+              <span class="glyphicon glyphicon-home"></span>  Home</a></li>
             {{#if logged_in}}
 	            {{#if isAdmin}}
-	            <li class="{{navClassFor 'admin'}}" ><a id="admin" href="{{adminDashboardPath}}">Admin Dashboard</a></li>
+	            <li class="{{navClassFor 'admin'}}" ><a id="admin" href="{{adminDashboardPath}}">
+                <span class="glyphicon glyphicon-wrench"></span> Admin Dashboard</a></li>
 	         	{{/if}}
-	         	<li class="{{navClassFor 'dashboard'}}" ><a id="dashboard" href="{{userDashboardPath}}">Dashboard</a></li>
+	         	<li class="{{navClassFor 'dashboard'}} {{dashboardActive}}" ><a id="dashboard" href="{{shortlistsPath}}">
+              <span class="glyphicon glyphicon-briefcase"></span> Dashboard</a></li>
 	         {{/if}}
-	        <li class="{{navClassFor 'about'}}" ><a id="about" href="{{aboutPath}}">About me</a></li>
-	        <li class="{{navClassFor 'contact'}}" ><a id="contact" href="{{contactPath}}">Contact</a></li>
+	        <li class="{{navClassFor 'about'}}" ><a id="about" href="{{aboutPath}}">
+            <span class="glyphicon glyphicon-user"></span> About me</a></li>
+	        <li class="{{navClassFor 'contact'}}" ><a id="contact" href="{{contactPath}}">
+            <span class="glyphicon glyphicon-phone-alt"></span> Contact</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
+            <li class="{{navClassFor 'signup'}}"><a href="{{signupPagePath}}">Sign Up</a></li>
+            <li class="{{navClassFor 'login'}}"><a href="{{loginPagePath}}">Login</a></li>
             <li><div class="dropdown">{{loginButtons}}</div></li>
            </ul>
         </div><!--/.nav-collapse -->

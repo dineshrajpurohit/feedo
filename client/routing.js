@@ -37,11 +37,23 @@ Meteor.pages({
 	"/biz/:_id" : { to: "showBusiness", before: setCompany, nav: "home"},
 	"/biz/:_id/review" : {to: "writeReview", before: setCompany, nav: "home"},
 	"/admin" : {to: "adminDashboard", before: checkIsAdmin, nav: "admin"},
-	"/dashboard" : {to: "userDashboard", before: authorizeUser, nav: "dashboard"},
+	"/dashboard" : {to: "shortlists", before: authorizeUser, nav: "dashboard"},
 	//Static pages
 	"/401" : {to: 'unauthorized'},
 	"/404" : {to: "notFound"},
 	"/about" : {to: "about", nav: "about" },
 	"/contact" : {to: "contact", nav: "contact"},
-	"*" : {to: "notFound"}
+	"/login": {to: "loginPage", nav: "login"},
+	"/signup": {to: "signupPage", nav: "signup"},
+	"/password": {to: "forgotPasswordPage"},
+
+	// Dashboard routing
+	"/dashboard/shortlists" : {to: "shortlists", before: authorizeUser, nav: "dashboard"},
+	"/dashboard/approved" : {to: "approved", before: authorizeUser, nav: "approved"},
+	"/dashboard/profile" : {to: "profile", before: authorizeUser, nav: "profile"},
+	"/dashboard/reviews" : {to: "reviews", before: authorizeUser, nav: "reviews"},
+	"/dashboard/statistics" : {to: "statistics", before: authorizeUser, nav: "statistics"},
+
+	"*" : {to: "notFound"},
+
 });
