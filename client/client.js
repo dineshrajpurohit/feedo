@@ -19,7 +19,6 @@ Accounts.ui.config({
 All Jquery stuff
 **/
 
-
 /**
 Meteor Mini-Pages
 Please. Please.. PLease replace this by backbone routing
@@ -77,7 +76,7 @@ Handlebars.registerHelper("formatDate", function(datetime){
 });
 
 Handlebars.registerHelper("navClassFor", function(nav, options){
-	return Session.equals("nav-link", nav) ? "active" : "";
+	return Meteor.router.navEquals(nav) ? "active" : "";
 });
 
 // creating handlebar helper for count since it will be called by many templates
@@ -101,16 +100,16 @@ Handlebars.registerHelper("getUserPoints", function(user_id){
 
 // Change this to Iron Routing instead
 Meteor.pages({
-	"/" : {to: "companies"},
-	"/biz/:_id" : { to: "showBusiness", before: setCompany},
-	"/biz/:_id/review" : {to: "writeReview", before: setCompany},
-	"/admin" : {to: "adminDashboard", before: checkIsAdmin},
-	"/dashboard" : {to: "userDashboard", before: authorizeUser},
+	"/" : {to: "companies", nav: "home"},
+	"/biz/:_id" : { to: "showBusiness", before: setCompany, nav: "home"},
+	"/biz/:_id/review" : {to: "writeReview", before: setCompany, nav: "home"},
+	"/admin" : {to: "adminDashboard", before: checkIsAdmin, nav: "admin"},
+	"/dashboard" : {to: "userDashboard", before: authorizeUser, nav: "dashboard"},
 	//Static pages
 	"/401" : {to: 'unauthorized'},
 	"/404" : {to: "notFound"},
-	"/about" : {to: "about" },
-	"/contact" : {to: "contact"},
+	"/about" : {to: "about", nav: "about" },
+	"/contact" : {to: "contact", nav: "contact"},
 	"*" : {to: "notFound"}
 });
 
@@ -242,16 +241,6 @@ Template.adminDashboard.events({
 	}
 });
 
-/**
- Temporary solution for navigation ** change it to better one
-**/
-Template.layout.events({
-	"click .navs" : function(event, t){
-		var page = String(event.target.id);
-		Session.set("nav-link", page);
-	}
-});
-
 Template.companies.events({
 	'click .write-review' : function(event, t){
 		if(Meteor.userId())
@@ -271,16 +260,16 @@ Template.companies.events({
 
 // Event from show Business template
 Template.showBusiness.events({
-	'click #checkShortlist': function(event, template){
-		var reviewId = template.find("#checkShortlist").value;
-		var reviewBy = $("#checkShortlist").attr("by");
+	'click .checkShortlist': function(event, template){
+		var reviewId = this._id;
+		var reviewBy = this.user_id;
 		var userId = Meteor.userId();
-		var bizId = (Session.get("company"))._id;
+		var bizId = this.company_id;
 		if(userId && reviewId && bizId){
 			// if user is same as reviewer
 			if(userId == reviewBy){
-				var content = "<div class='message-error span4'>You cannot shortlist your own review</div>";
-				$(content).hide().appendTo(".rateReview").fadeIn(500);
+				var content = "<div class='message-error'>You cannot shortlist your own review</div>";
+				$(content).hide().appendTo("#" + reviewId).fadeIn(500);
 				fadeOutAndRemove(".message-error");			
 				return false;
 			}
@@ -297,7 +286,11 @@ Template.showBusiness.events({
 			// change this to create a login model
 			console.log("Please log in");
 		}
-	}
+	},
+	'mouseup .whatIsShortlist': function(event, template){
+		$(".whatIsShortlist").popover({title: "Shortlisting explained!!", content: "If you wish togo through a review later you can shortlist it now. Once you finished shortlisting all the desired reviews you can go to the dashboard and accept any comment you like.", html: true});
+	},
+
 });
 
 Template.writeReview.events({
