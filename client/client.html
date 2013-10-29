@@ -3,81 +3,99 @@
 </head>
 
 <body>
+
 </body>
 
 <!-- Mini Pages implementation -->
 <template name="layout">
-    <div class="container">
-	      <div class="masthead">
-	        <h3 class="muted">Feedo</h3>
-	        <div class="navbar">
-	          <div class="navbar-inner">
-	            <div class="container">
-	              <ul class="nav">
-	                <li class="navs {{navClassFor 'home'}}" ><a id="home" href="{{companiesPath}}">Home</a></li>
-	                {{#if logged_in}}
-	                {{#if isAdmin}}
-	                <li class="navs {{navClassFor 'admin'}}" ><a id="admin" href="{{adminDashboardPath}}">Admin Dashboard</a></li>
-	                {{/if}}
-	                <li class="navs {{navClassFor 'dashboard'}}" ><a id="dashboard" href="{{userDashboardPath}}">Dashboard</a></li>
-	                {{/if}}
-	                <li class="navs {{navClassFor 'about'}}" ><a id="about" href="{{aboutPath}}">About me</a></li>
-	                <li class="navs {{navClassFor 'contact'}}" ><a id="contact" href="{{contactPath}}">Contact</a></li>
-	              </ul>
-	               <div class="btn login-btn">{{loginButtons align="right"}}</div>
-	            </div>
-	          </div>
-	        </div><!-- /.navbar -->
-	      </div>
-	      <div class="main-canvas">
-      	{{{yield}}}
-			</div>
-	 </div>
+	 <!-- Static navbar -->
+    <div class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{{companiesPath}}">Feedo</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="{{navClassFor 'home'}}"><a href="{{companiesPath}}">Home</a></li>
+            {{#if logged_in}}
+	            {{#if isAdmin}}
+	            <li class="{{navClassFor 'admin'}}" ><a id="admin" href="{{adminDashboardPath}}">Admin Dashboard</a></li>
+	         	{{/if}}
+	         	<li class="{{navClassFor 'dashboard'}}" ><a id="dashboard" href="{{userDashboardPath}}">Dashboard</a></li>
+	         {{/if}}
+	        <li class="{{navClassFor 'about'}}" ><a id="about" href="{{aboutPath}}">About me</a></li>
+	        <li class="{{navClassFor 'contact'}}" ><a id="contact" href="{{contactPath}}">Contact</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><div class="dropdown">{{loginButtons}}</div></li>
+           </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+     <div class="container">
+     	<div class="main-canvas">
+      			{{{yield}}}
+		</div>
+     </div>
 </template>
 
 <template name="searchBusiness">
-	<div>
-		<form class="form-search">
-  			<input type="text" class="input-xxlarge search-query" placeholder="Search: Restaurants, Food, Hospitals etc." />
-  			<button id="searchBusiness" type="submit" class="btn">Search</button>
+	<div class="row panel">
+		<form class="form-inline" role="search" style="margin-top: 20px;">
+			<div class="col-lg-7">
+				<input style="height: 54px;" type="search" class="form-control" placeholder="Search: Restaurants, Food, Hospitals etc." /><br/><br/>
+  			</div>
+  			<div class="col-lg-4">
+  				<button id="searchBusiness" type="submit" data-loading-text="Searching..." class="btn btn-default btn-lg">
+  					<span class="glyphicon glyphicon-search"></span> Search
+  				</button>
+  			</div>  				
 		</form>
 	</div>
 </template>
 
 <template name="companies">
-	{{> searchBusiness}}
-	<ul id="company-list">
-			{{#if write_error}}
-			<div id="write_error_id" class="alert alert-error">
-			 <a id="remove_login_alert" class="close" data-dismiss="alert">×</a>  
-				{{write_error}}
-			</div>
-			{{/if}}
-		{{#each companies}}
-		<li>
-		<div id="company">
+	<div class="panel panel-default">
+			{{> searchBusiness}}
+		<ul id="company-list">
+				{{#if write_error}}
+				<div id="write_error_id" class="alert alert-error">
+				 <a id="remove_login_alert" class="close" data-dismiss="alert">×</a>  
+					{{write_error}}
+				</div>
+				{{/if}}
+			{{#each companies}}
+			<li>
+			<div id="company">
+			
+				<h4><a href="{{showBusinessPath}}">{{name}}</a></h4>
+				<div class="company-info">
+					<div class="category-info">
+						$$$ | {{category}} | reviews: {{get_reviews_count this._id}} | 
+						
+						<a class="btn btn-primary btn-xs" href="{{writeReviewPath}}" >write review</a>
+					</div>
+					<div class="company-address pull-right">
+					<address>{{address.street}}<br/>{{address.city}}, {{address.state}}</address>
+					</div>	
+					<div id="latest_review">
+						<b>latest review:</b><br/>
+						<i>{{#if latest_review this._id}}{{latest_review this._id}}{{else}} No reviews!{{/if}}</i>						
+					</div>
+					<br/>	
+				</div>
 		
-			<h4><a href="{{showBusinessPath}}">{{name}}</a></h4>
-			<div class="company-info">
-				<div class="category-info">
-					$$$ | {{category}} | reviews: {{get_reviews_count this._id}} | 
-					
-					<a class="btn btn-inverse btn-mini" href="{{writeReviewPath}}" >write review</a>
-				</div>
-				<div class="company-address pull-right">
-				<address>{{address.street}}<br/>{{address.city}}, {{address.state}}</address>
-				</div>	
-				<div id="latest_review">
-					<b>latest review:</b><br/>
-					<i>{{#if latest_review this._id}}{{latest_review this._id}}{{else}} No reviews!{{/if}}</i>						
-				</div>
-				<br/>	
-			</div>
-	
-		</li>
-	{{/each}}
-		</ul>
-	</div>
+			</li>
+		{{/each}}
+			</ul>
+		</div>
+	</div>	
 </template>
 
 <template name="showBusiness">
@@ -86,35 +104,44 @@
 			<div id="main-info">
 				<h3>{{name}}</h3>
 				<p>******** (stars) | 
-				<span class="label">
+				<span class="badge">
 					{{#if reviews_count}}{{reviews_count}}{{else}}0{{/if}}
 				</span> reviews</p>
 				Category: {{category}}<br>
-				<div class="well">
-					<address>{{address.street}}<br/>{{address.city}}, {{address.state}}</address>
-					<span>{{phone}}</span><br/>
-					<span><a href="http://{{website}}" target="_blank">{{website}}</a></span>
-				</div>
-				</div>
-			</div><br/>
+				<div id="" class="panel">
+					<div class="well">
+						<address>{{address.street}}<br/>{{address.city}}, {{address.state}}</address>
+						<span>{{phone}}</span><br/>
+						<span><a href="http://{{website}}" target="_blank">{{website}}</a></span>
+					</div>
+
+				</div>	
+			</div>
+		</div>
 			<div id="additional-info" class="row">
-				<div class="span4 well well-small">
-					<dl class="dl-horizontal">
-						<dt>Price Range: </dt><dd>$$</dd>
-						<dt>Delivery: </dt><dd>Yes</dd>
-						<dt>Noise Level: </dt><dd>Loud</dd>
-						<dt>Takes Reservation: </dt><dd>Yes</dd>
-					</dl>	
-				</div>
-				<div class="span4 well well-small">
+				<div class="panel row">
+					<div class="col-lg-5 well" style="margin-left: 25px;">
 						<dl class="dl-horizontal">
-						<dt>Price Range: </dt><dd>$$</dd>
-						<dt>Delivery: </dt><dd>Yes</dd>
-						<dt>Noise Level: </dt><dd>Loud</dd>
-						<dt>Takes Reservation: </dt><dd>Yes</dd>
-					</dl>		
+							<dt>Price Range: </dt><dd>$$</dd>
+							<dt>Delivery: </dt><dd>Yes</dd>
+							<dt>Noise Level: </dt><dd>Loud</dd>
+							<dt>Takes Reservation: </dt><dd>Yes</dd>
+						</dl>	
+					</div>
+					<div class="col-lg-5 well" style="margin-left: 100px; ">
+							<dl class="dl-horizontal">
+							<dt>Price Range: </dt><dd>$$</dd>
+							<dt>Delivery: </dt><dd>Yes</dd>
+							<dt>Noise Level: </dt><dd>Loud</dd>
+							<dt>Takes Reservation: </dt><dd>Yes</dd>
+						</dl>		
+					</div>
 				</div>
-				<div id="company-reviews" class="span9">
+				<br/>
+				<div class="panel panel-default">
+				  <div class="panel-heading">Sort by date rating etc</div>
+				  <div class="panel-body">
+					<div id="company-reviews">
 					<blockquote><p>{{get_reviews_count this._id}} reviews as follows:
 						<a href="{{writeReviewPath}}" class="btn btn-primary pull-right">Write Review</a></p>
 					</blockquote>
@@ -130,34 +157,49 @@
 	      							<h5 class="media-heading">{{title}} <small>({{formatDate time}}) | User points: {{getUserPoints user_id}}</small></h5>
 	      							<p>{{review}}</p><br/><br/>
 	      							<div class="extra-stuff">
-	      								<div class="rateReview">
-	      									<p>Thoughts about the review!</p>
-	      									<ul class="inline">
-	      										<li>
-	      											<a href="">Funny</a>
-	      										</li>
-	      										<li>
-	      											<a href="">Cool</a>
-	      										</li>
-	      										<li>
-	      										{{#if shortlisted this._id}}
-	      											<label class="btn btn-success disabled">&#x2713; shortlisted</label>
-												 {{else}}
-	      											<div id="shortListButton">
-											   		<label>
-												      		<input by="{{user_id}}" id="checkShortlist" type="checkbox" value="{{this._id}}"><span>shortlist</span>
-												   		</label>
-													</div>
-													{{/if}}
-	      										</li>
-	      									</ul>
+	      								<div class="rateReview" >
+	      									<p>Thoughts about the review?</p>
+	      									<div id="fun-stuff">
+		      									<ul class="nav-pills" style="list-style:none;">
+		      										<li class="active">
+		      											<a class="btn btn-xs" href="#">
+		      												Cool
+	      													<span class="badge">4</span>
+	   													</a>
+		      										</li>
+		      										<li class="active">
+		      											<a class="btn btn-xs" href="#">
+		      												Funny
+	      													<span class="badge">2</span>
+	   													</a>
+		      										</li>
+		      										<li>
+		      										{{#if shortlisted this._id}}
+		      											<label class="btn btn-success disabled checkShortlist"><!-- &#x2713;  -->
+		      												<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;
+		      												shortlisted</label>
+													 {{else}}
+													  		<button id="" class="checkShortlist btn btn-default">
+													  			shortlist
+													  		</button>
+														{{/if}}
+		      										</li>
+		      										<li>
+		      											<a class="whatIsShortlist">What is shortlisting?</a>
+
+		      										</li>
+		      									</ul><br/>
+	      									</div>	
+	      									<div id="{{this._id}}"></div>      					
 										</div>
 									</div>
 	      						</div>	
 							</li> 
 						{{/each}}
 						{{/if}}
-					</ul>
+					</ul>						
+				</div>
+				  </div>
 				</div>
 			</div>
 		</div>		
@@ -174,16 +216,18 @@
 				{{address.street}}<br/>{{address.city}}, {{address.state}} {{address.zipcode}}
 			</address>
 		</div>
-		<div id="review_form">
-			{{#if error_review}}
+		<div class="row" id="review_form">
+			<div class="col-md-6">
+				{{#if error_review}}
 				<div class="alert alert-error">{{error_review}}</div>
-			{{/if}}
-			<form id="submit-review" action="{{showBusinessPath}}">
-				<input name="title" type="text" id="review-title" placeholder="Review Title" /><br/>
-				<textarea name="review" id="review-review" row="3" cols="7" style="width: 450px; height:100px" /><br/>
-				<button type="submit" id="submitReviewForm" class="btn btn-inverse">Submit Review</button>
-				<a class="btn" href="{{showBusinessPath}}" id="cancel-review">Cancel</a>
-			</form>
+				{{/if}}
+				<form id="submit-review" action="{{showBusinessPath}}">
+					<input class="form-control" name="title" type="text" id="review-title" placeholder="Review Title" /><br/>
+					<textarea class="form-control" name="review" id="review-review" rows="7" placeholder="Review Body"/><br/>
+					<button type="submit" id="submitReviewForm" class="btn btn-primary">Submit Review</button>
+					<a class="btn btn-default" href="{{showBusinessPath}}" id="cancel-review">Cancel</a>
+				</form>
+			</div>
 		</div>
 	</div>
 
@@ -193,35 +237,54 @@
 <!-- Template for Admin Dashboard -->
 <template name="adminDashboard">
 <!--	Section for adding new company -->
-<div>
-	<button class="btn btn-inverse" id="create_biz">Add New Business</button>
+<div class="row">
+	<button class="btn btn-primary" id="create_biz">Add New Business</button><br/><br/>
 	{{#if biz_form_sucess}}
-	<div class="alert alert-sucess">	
+	<div class="alert alert-success">	
 	 	<a id="remove_biz_alert" class="close" data-dismiss="alert">×</a>  
 		Created new Business Successfully
 	</div>
 	{{/if}}
 	{{#if create_biz_form}}
-	<div id="create_biz_form">
-		<form name="bizForm" id="bizForm">
-		  <fieldset>
-		    <legend>Create a new Business (Not doing any validation)</legend>
-		    <label>name</label>
-		    <input name="name" id="bizName" type="text" placeholder="Business Name">
-		    <label>Category</label>
-		    <input name="category" id="bizCat" type="text" placeholder="Business Category (Restaurant, Hospital)">
-		    <label>Address</label>
-		    <input name="street" id="bizStreet" type="text" placeholder="Street">
-		    <input name="city" id="bizCity" type="text" placeholder="City">
-		    <input name="state" id="bizState" type="text" placeholder="State">
-		    <input name="zipcode" id="bizZip" type="text" placeholder="Zipcode">
-		    <input name="phone" id="bizPhone" type="text" placeholder="Phone">
-		    <input name="website" id="bizSite" type="text" placeholder="Website">
-		    <br/>
-		    <button type="submit" class="btn btn-primary">Submit</button>
-		    <a class="btn" id="cancel_create_biz">Cancel</a>
-		  </fieldset>
-		</form>
+	<div id="create_biz_form" class="panel panel-default col-lg-8">
+		<br/>
+			<legend>Create a new Business (Not doing any validation)</legend>
+			<form name="bizForm" id="bizForm" role="form">
+			  <div class="form-group">
+			    <label>Name</label>
+		    	<input class="form-control" name="name" id="bizName" type="text" placeholder="Business Name">
+			  </div>
+			  <div class="form-group">
+			     <label>Category</label>
+		    	<input class="form-control" name="category" id="bizCat" type="text" placeholder="Business Category (Restaurant, Hospital)"><br/>
+			  <div class="form-group">
+			    <label>Address</label><br/>
+			    <div class="col-lg-3">
+			    	<input class="form-control" name="street" id="bizStreet" type="text" placeholder="Street">
+			    </div>
+			    <div class="col-lg-3">
+			    	<input class="form-control" name="city" id="bizCity" type="text" placeholder="City">	
+			    </div>
+			    <div class="col-lg-3">
+			    	<input class="form-control" name="state" id="bizState" type="text" placeholder="State">
+			    </div>
+			    <div class="col-lg-3">
+			    	<input class="form-control" name="zipcode" id="bizZip" type="text" placeholder="Zipcode">
+			    </div>
+			  </div>
+			  <br/><br/>
+			  <div class="form-group">
+			  	 <div class="col-lg-3">
+			    	<input class="form-control" name="phone" id="bizPhone" type="text" placeholder="Phone">	
+			    </div>
+			    <div class="col-lg-6">
+			    	<input class="form-control" name="website" id="bizSite" type="url" placeholder="Website">
+			    </div>	
+			  </div>
+			  <br/><br/>
+			 	<button type="submit" class="btn btn-primary">Submit</button>
+		    	<a class="btn" id="cancel_create_biz">Cancel</a>
+			</form>
 	</div>
 	{{/if}}
 </div>

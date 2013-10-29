@@ -2,6 +2,7 @@
   "packages": {
     "mini-pages": {},
     "moment": {},
-    "jquery-ui": {}
+    "jquery-ui": {},
+    "bootstrap-3": {}
   }
 }

@@ -7,7 +7,6 @@ standard-app-packages
 autopublish
 preserve-inputs
 mini-pages
-bootstrap
 less
 moment
 accounts-password
@@ -16,3 +15,4 @@ jquery
 jquery-ui
 accounts-base
 email
+bootstrap-3

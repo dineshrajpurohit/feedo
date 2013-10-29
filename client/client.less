@@ -12,7 +12,7 @@ body {
 	-webkit-border-radius: 1px;
 	-moz-border-radius: 1px;
 	border-radius: 1px;
-	padding: 30px 30px 48px 30px;
+	padding: 10px 30px 48px 30px;
 	height: 100%
 }
 
@@ -111,7 +111,7 @@ body {
 }
 
 // Remove this
-#shortListButton {
+.shortListButton {
     background-color:#EFEFEF;
     border-radius:4px;
     border:1px solid #D0D0D0;
@@ -120,27 +120,28 @@ body {
     padding: 0px;
 }
 
-#shortListButton label {
+.shortListButton label {
     float:left;
-    width:7.0em;
+    width:9.0em;
 }
 
-#shortListButton label span {
+.shortListButton label span {
     text-align:center;
-    padding:5px 0px;
+    padding:3px 0px;
     display:block;
-
+    cursor: pointer;
 }
 
-#shortListButton label input {
+.shortListButton label input {
     position:absolute;
-    top:-20px;
+    top:-32px;
     visibility: hidden;
 }
 
 //Message Errors
 .message-error{
-	z-index:-7;
+	position: absolute;
+	z-index:7;
 	display:block;
 	color:#ffffff;
 	background-color:#c04848;
@@ -149,7 +150,29 @@ body {
 	padding:2px 6px 3px 6px;
 	margin-top:8px;
 	margin-right:8px;
+	width: 20%;
+	height: 30px;
 }
 
+.checkShortlist{
+	position: relative;
+	top: -7px;
+	width: 150px;
+	height: 34px;
+}
 
+.rateReview{
+	height: 90px;
+}
+
+.whatIsShortlist{
+	border-bottom: 1px black dotted;
+	text-decoration: none;
+	font-size: 12px;
+	cursor: help;
+	padding: 3px;
+}
+.whatIsShortlist a, a:focus, a:hover{
+	text-decoration: none;
+}
 
