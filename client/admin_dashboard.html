@@ -1,0 +1,55 @@
+<!-- Template for Admin Dashboard -->
+<template name="adminDashboard">
+<!--	Section for adding new company -->
+<div class="row">
+	<button class="btn btn-primary" id="create_biz">Add New Business</button><br/><br/>
+	{{#if biz_form_sucess}}
+	<div class="alert alert-success">	
+	 	<a id="remove_biz_alert" class="close" data-dismiss="alert">×</a>  
+		Created new Business Successfully
+	</div>
+	{{/if}}
+	{{#if create_biz_form}}
+	<div id="create_biz_form" class="panel panel-default col-lg-8">
+		<br/>
+			<legend>Create a new Business (Not doing any validation)</legend>
+			<form name="bizForm" id="bizForm" role="form">
+			  <div class="form-group">
+			    <label>Name</label>
+		    	<input class="form-control" name="name" id="bizName" type="text" placeholder="Business Name">
+			  </div>
+			  <div class="form-group">
+			     <label>Category</label>
+		    	<input class="form-control" name="category" id="bizCat" type="text" placeholder="Business Category (Restaurant, Hospital)"><br/>
+			  <div class="form-group">
+			    <label>Address</label><br/>
+			    <div class="col-lg-3">
+			    	<input class="form-control" name="street" id="bizStreet" type="text" placeholder="Street">
+			    </div>
+			    <div class="col-lg-3">
+			    	<input class="form-control" name="city" id="bizCity" type="text" placeholder="City">	
+			    </div>
+			    <div class="col-lg-3">
+			    	<input class="form-control" name="state" id="bizState" type="text" placeholder="State">
+			    </div>
+			    <div class="col-lg-3">
+			    	<input class="form-control" name="zipcode" id="bizZip" type="text" placeholder="Zipcode">
+			    </div>
+			  </div>
+			  <br/><br/>
+			  <div class="form-group">
+			  	 <div class="col-lg-3">
+			    	<input class="form-control" name="phone" id="bizPhone" type="text" placeholder="Phone">	
+			    </div>
+			    <div class="col-lg-6">
+			    	<input class="form-control" name="website" id="bizSite" type="url" placeholder="Website">
+			    </div>	
+			  </div>
+			  <br/><br/>
+			 	<button type="submit" class="btn btn-primary">Submit</button>
+		    	<a class="btn" id="cancel_create_biz">Cancel</a>
+			</form>
+	</div>
+	{{/if}}
+</div>
+</template>	

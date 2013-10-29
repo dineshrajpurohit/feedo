@@ -1,0 +1,31 @@
+<template name="navigation">
+		 <!-- Static navbar -->
+    <div class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{{companiesPath}}">Feedo</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="{{navClassFor 'home'}}"><a href="{{companiesPath}}">Home</a></li>
+            {{#if logged_in}}
+	            {{#if isAdmin}}
+	            <li class="{{navClassFor 'admin'}}" ><a id="admin" href="{{adminDashboardPath}}">Admin Dashboard</a></li>
+	         	{{/if}}
+	         	<li class="{{navClassFor 'dashboard'}}" ><a id="dashboard" href="{{userDashboardPath}}">Dashboard</a></li>
+	         {{/if}}
+	        <li class="{{navClassFor 'about'}}" ><a id="about" href="{{aboutPath}}">About me</a></li>
+	        <li class="{{navClassFor 'contact'}}" ><a id="contact" href="{{contactPath}}">Contact</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><div class="dropdown">{{loginButtons}}</div></li>
+           </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+</template>

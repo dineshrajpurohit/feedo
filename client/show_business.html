@@ -1,0 +1,107 @@
+<template name="showBusiness">
+	{{#with company}}
+		<div id="company_info">
+			<div id="main-info">
+				<h3>{{name}}</h3>
+				<p>******** (stars) | 
+				<span class="badge">
+					{{#if reviews_count}}{{reviews_count}}{{else}}0{{/if}}
+				</span> reviews</p>
+				Category: {{category}}<br>
+				<div id="" class="panel">
+					<div class="well">
+						<address>{{address.street}}<br/>{{address.city}}, {{address.state}}</address>
+						<span>{{phone}}</span><br/>
+						<span><a href="http://{{website}}" target="_blank">{{website}}</a></span>
+					</div>
+
+				</div>	
+			</div>
+		</div>
+			<div id="additional-info" class="row">
+				<div class="panel row">
+					<div class="col-lg-5 well" style="margin-left: 25px;">
+						<dl class="dl-horizontal">
+							<dt>Price Range: </dt><dd>$$</dd>
+							<dt>Delivery: </dt><dd>Yes</dd>
+							<dt>Noise Level: </dt><dd>Loud</dd>
+							<dt>Takes Reservation: </dt><dd>Yes</dd>
+						</dl>	
+					</div>
+					<div class="col-lg-5 well" style="margin-left: 100px; ">
+							<dl class="dl-horizontal">
+							<dt>Price Range: </dt><dd>$$</dd>
+							<dt>Delivery: </dt><dd>Yes</dd>
+							<dt>Noise Level: </dt><dd>Loud</dd>
+							<dt>Takes Reservation: </dt><dd>Yes</dd>
+						</dl>		
+					</div>
+				</div>
+				<br/>
+				<div class="panel panel-default">
+				  <div class="panel-heading">Sort by date rating etc</div>
+				  <div class="panel-body">
+					<div id="company-reviews">
+					<blockquote><p>{{get_reviews_count this._id}} reviews as follows:
+						<a href="{{writeReviewPath}}" class="btn btn-primary pull-right">Write Review</a></p>
+					</blockquote>
+					<ul id="review_list" class="media-list">
+						{{#if reviews this_id}}
+						{{#each reviews this._id}}
+							<li id="" class="media">
+    							<a class="pull-left" href="#">
+      								<img class="media-object" width="64" height="64" src="http://cdn2.designbyhumans.com/img/blank-user-100.gif">
+      								<small>{{review_user user_id}}</small>
+    							</a>
+	    						<div class="media-body">
+	      							<h5 class="media-heading">{{title}} <small>({{formatDate time}}) | User points: {{getUserPoints user_id}}</small></h5>
+	      							<p>{{review}}</p><br/><br/>
+	      							<div class="extra-stuff">
+	      								<div class="rateReview" >
+	      									<p>Thoughts about the review?</p>
+	      									<div id="fun-stuff">
+		      									<ul class="nav-pills" style="list-style:none;">
+		      										<li class="active">
+		      											<a class="btn btn-xs" href="#">
+		      												Cool
+	      													<span class="badge">4</span>
+	   													</a>
+		      										</li>
+		      										<li class="active">
+		      											<a class="btn btn-xs" href="#">
+		      												Funny
+	      													<span class="badge">2</span>
+	   													</a>
+		      										</li>
+		      										<li>
+		      										{{#if shortlisted this._id}}
+		      											<label class="btn btn-success disabled checkShortlist"><!-- &#x2713;  -->
+		      												<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;
+		      												shortlisted</label>
+													 {{else}}
+													  		<button id="" class="checkShortlist btn btn-default">
+													  			shortlist
+													  		</button>
+														{{/if}}
+		      										</li>
+		      										<li>
+		      											<a class="whatIsShortlist">What is shortlisting?</a>
+
+		      										</li>
+		      									</ul><br/>
+	      									</div>	
+	      									<div id="{{this._id}}"></div>      					
+										</div>
+									</div>
+	      						</div>	
+							</li> 
+						{{/each}}
+						{{/if}}
+					</ul>						
+				</div>
+				  </div>
+				</div>
+			</div>
+		</div>		
+	{{/with}}
+</template>

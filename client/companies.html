@@ -1,0 +1,37 @@
+<template name="companies">
+	<div class="panel panel-default">
+			{{> searchBusiness}}
+		<ul id="company-list">
+				{{#if write_error}}
+				<div id="write_error_id" class="alert alert-error">
+				 <a id="remove_login_alert" class="close" data-dismiss="alert">×</a>  
+					{{write_error}}
+				</div>
+				{{/if}}
+			{{#each companies}}
+			<li>
+			<div id="company">
+			
+				<h4><a href="{{showBusinessPath}}">{{name}}</a></h4>
+				<div class="company-info">
+					<div class="category-info">
+						$$$ | {{category}} | reviews: {{get_reviews_count this._id}} | 
+						
+						<a class="btn btn-primary btn-xs" href="{{writeReviewPath}}" >write review</a>
+					</div>
+					<div class="company-address pull-right">
+					<address>{{address.street}}<br/>{{address.city}}, {{address.state}}</address>
+					</div>	
+					<div id="latest_review">
+						<b>latest review:</b><br/>
+						<i>{{#if latest_review this._id}}{{latest_review this._id}}{{else}} No reviews!{{/if}}</i>						
+					</div>
+					<br/>	
+				</div>
+		
+			</li>
+		{{/each}}
+			</ul>
+		</div>
+	</div>	
+</template>
