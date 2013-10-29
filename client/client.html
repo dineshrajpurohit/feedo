@@ -42,6 +42,11 @@
      	<div class="main-canvas">
       			{{{yield}}}
 		</div>
+		<div class="footer">
+			{{> footer}}
+		</div>
+		
+		<div id="login"></div>
      </div>
 </template>
 
@@ -317,4 +322,121 @@
 		<h2>404 - Page Not found</h2>
 		<h4>Please go back to Home page <a href="{{companiesPath}}">Go to Homepage!!!</a> or navigate to a specific page from the menu: </h4>
 	</div>
+</template>
+
+<!-- Modal for login -->
+<template name="loginModal">
+	  <!-- Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="Login" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Please login to shortlist or post the review</h4>
+        </div>
+        <div class="modal-body">
+	       		{{> signUpTemplate}}
+	       		{{> signInTemplate}}
+         </div>
+        <div class="modal-footer">
+        	<div id="askSignIn">
+        		<span>Already have a login? <a id="modalSigninButton" href="">Sign In</a></span>
+        	</div>
+        	<div id="askSignUp">
+        		<span>New to Feedo? <a id="modalSignupButton" href="">Sign Up</a></span>
+        	</div>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+</template>	
+
+<!-- //Sign in Template -->
+ <template name="signInTemplate">
+ 	<div id="login-form">
+ 		<form class="form-signin">
+	        <h2 class="form-signin-heading">Please sign in</h2>
+	        <input type="text" class="form-control" placeholder="Email address" autofocus>
+	        <input type="password" class="form-control" placeholder="Password">
+	        <a class="pull-right" href="http://bootsnipp.com/password">Forgot password?</a>
+	        <label class="checkbox">
+	          <input type="checkbox" value="remember-me"> Remember me
+	        </label>
+	        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+	    </form>
+ 	</div>
+</template>
+
+<!-- // Signup template -->
+<template name="signUpTemplate">
+	<div id="signup-form">
+		<form class="form-signin">
+		    <h2 class="form-signin-heading">Register with Feedo</h2>
+		   	<input name="username" type="text" class="form-control" placeholder="Username" autofocus>
+		    <input name="email" type="text" class="form-control" placeholder="Email address" >
+		    <input name="password" type="password" class="form-control" placeholder="Password">
+		    <input name="password_confirmation" type="password" class="form-control" placeholder="Confirm Password">
+		        <button name="signup" class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+	     </form>
+	</div>
+</template>
+
+<!-- // Footer Template -->
+<template name="footer">
+<div class="container">    
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="col-md-3">
+        <ul class="list-unstyled">
+          <li>About<li>
+          <li><a href="#">About Feedo</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Contact us</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <ul class="list-unstyled">
+          <li>Help<li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Advertise</a></li>
+          <li><a href="#">Content Guidelines</a></li>
+          <li><a href="#">Technical Support</a></li>              
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <ul class="list-unstyled">
+          <li>Services<li>
+          <li><a href="#">Web analytics</a></li>
+          <li><a href="#">Presentations</a></li>
+          <li><a href="#">Code snippets</a></li>
+          <li><a href="#">Job board</a></li>              
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <ul class="list-unstyled">
+          <li>Documentation<li>
+          <li><a href="#">Product Help</a></li>
+          <li><a href="#">Developer API</a></li>
+          <li><a href="#">Product Markdown</a></li>
+          <li><a href="#">Product Pages</a></li>              
+        </ul>
+      </div>  
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="col-md-8">
+        <a href="#">Terms of Service</a>    
+        <a href="#">Privacy</a>    
+        <a href="#">Security</a>
+      </div>
+      <div class="col-md-4">
+        <p class="muted pull-right">© 2013 Feedo. All rights reserved</p>
+      </div>
+    </div>
+  </div>
+</div>
 </template>

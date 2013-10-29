@@ -283,40 +283,75 @@ Template.showBusiness.events({
 				});
 			}
 		}else{
-			// change this to create a login model
-			console.log("Please log in");
+			// change this to create a login modal
+			var loginTemplate = Meteor.render(function(){
+				return Template.loginModal();
+			});
+			if(loginTemplate){
+				$("#login").html(loginTemplate);
+				$("#signup-form").hide();
+				$("#askSignIn").hide();
+				$("#loginModal").modal();
+			}
 		}
 	},
-	'mouseup .whatIsShortlist': function(event, template){
-		$(".whatIsShortlist").popover({title: "Shortlisting explained!!", content: "If you wish togo through a review later you can shortlist it now. Once you finished shortlisting all the desired reviews you can go to the dashboard and accept any comment you like.", html: true});
-	},
+	'mouseover .whatIsShortlist' : function(event, template){
+		$(".whatIsShortlist").popover({trigger: "hover",title: "Shortlisting explained!!", content: "If you wish togo through a review later you can shortlist it now. Once you finished shortlisting all the desired reviews you can go to the dashboard and accept any comment you like.", html: true});
+	}
 
 });
 
 Template.writeReview.events({
-	'submit' :function(event, t){
+	'submit' :function(event, template){
 		event.preventDefault();	
 
-		var form = {};
-		$.each($("#submit-review").serializeArray(), function(){
-			form[this.name] = this.value; 
-		});
+		var title = template.find("#review-title").value;
+		var review = template.find("#review-review").value;
+		var userId = Meteor.userId();
 
-		form["company_id"] = this._id;
-		form["user_id"] = Meteor.userId();
-		form["time"] = Date.now();
-
-		if(Meteor.userId() && this._id && Validation.valid_review(form["title"], form["review"])){
-			Meteor.call("submitReview", form, this._id, Meteor.userId(), function(error, data){
-				console.log();
-				if(!error && data){
-					Meteor.go("/biz/" + data);
+		if(title && review){
+			if(userId && this._id){
+				var form = {title: title, review: review, company_id: this._id, user_id: userId, time: Date.now()};
+				Meteor.call("submitReview", form, this._id, Meteor.userId(), function(error, data){
+					console.log("error: " + error + " data" + data);
+					if(!error && data){
+						Meteor.go("/biz/" + data);
+					}
+				});
+			}else{
+				// change this to create a login modal
+				var loginTemplate = Meteor.render(function(){
+					return Template.loginModal();
+				});
+				if(loginTemplate){
+					$("#login").html(loginTemplate);
+					$("#signup-form").hide();
+					$("#askSignIn").hide();
+					$("#loginModal").modal();
 				}
-			});
+			}
+		}else{
+			//error messages
+			console.log("Validation");
 		}
 	},
 	'click #cancel-review' : function(event, t){
 		Validation.clear("review_error");
+	}
+});
+
+Template.loginModal.events({
+	'click #modalSignupButton' : function(event, template){
+		$("#login-form").hide();
+		$("#signup-form").show();
+		$("#askSignIn").show();
+		$("#askSignUp").hide();
+	},
+	'click #modalSigninButton' : function(event, template){
+		$("#signup-form").hide();
+		$("#login-form").show();
+		$("#askSignIn").hide();
+		$("#askSignUp").show();
 	}
 });
 
