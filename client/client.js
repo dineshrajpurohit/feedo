@@ -4,6 +4,7 @@ created by: Dinesh Purohit
 
 To-DOs: 
 - Please change the term companies to businesses
+- Seperate files based on templates
 ****************************************************************/
 
 /**
@@ -12,7 +13,7 @@ Accounts setting
 **/
 
 Accounts.ui.config({
-  passwordSignupFields: 'USERNAME_AND_OPTIONAL_EMAIL' 
+  passwordSignupFields: 'USERNAME_AND_EMAIL' 
 });
 
 /**
@@ -113,11 +114,11 @@ Meteor.pages({
 	"*" : {to: "notFound"}
 });
 
-Template.layout.logged_in = function(){
+Template.navigation.logged_in = function(){
 	return Meteor.userId() ? true : false;
 }
 
-Template.layout.isAdmin = function(){
+Template.navigation.isAdmin = function(){
 	var userId = Meteor.userId();
 	if(userId){
 		var user = Meteor.users.findOne({_id:userId});

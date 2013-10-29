@@ -1,0 +1,27 @@
+<template name="writeReview">
+	{{#with company}}
+	<div id="review_form">
+		<div id="review_form_company_info">
+			<h4><strong>Complete your review</strong>
+			<a href="{{showBusinessPath}}">{{name}}</a></h4>
+			<address class="pull-right">
+				{{address.street}}<br/>{{address.city}}, {{address.state}} {{address.zipcode}}
+			</address>
+		</div>
+		<div class="row" id="review_form">
+			<div class="col-md-6">
+				{{#if error_review}}
+				<div class="alert alert-error">{{error_review}}</div>
+				{{/if}}
+				<form id="submit-review" action="{{showBusinessPath}}">
+					<input class="form-control" name="title" type="text" id="review-title" placeholder="Review Title" /><br/>
+					<textarea class="form-control" name="review" id="review-review" rows="7" placeholder="Review Body"/><br/>
+					<button type="submit" id="submitReviewForm" class="btn btn-primary">Submit Review</button>
+					<a class="btn btn-default" href="{{showBusinessPath}}" id="cancel-review">Cancel</a>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	{{/with}}
+</template>

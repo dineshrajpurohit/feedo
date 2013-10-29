@@ -1,0 +1,57 @@
+<!-- Modal for login -->
+<template name="loginModal">
+	  <!-- Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="Login" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Please login to shortlist or post the review</h4>
+        </div>
+        <div class="modal-body">
+	       		{{> signUpTemplate}}
+	       		{{> signInTemplate}}
+         </div>
+        <div class="modal-footer">
+        	<div id="askSignIn">
+        		<span>Already have a login? <a id="modalSigninButton" href="">Sign In</a></span>
+        	</div>
+        	<div id="askSignUp">
+        		<span>New to Feedo? <a id="modalSignupButton" href="">Sign Up</a></span>
+        	</div>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+</template>	
+
+<!-- //Sign in Template -->
+ <template name="signInTemplate">
+ 	<div id="login-form">
+ 		<form class="form-signin">
+	        <h2 class="form-signin-heading">Please sign in</h2>
+	        <input type="text" class="form-control" placeholder="Email address" autofocus>
+	        <input type="password" class="form-control" placeholder="Password">
+	        <a class="pull-right" href="http://bootsnipp.com/password">Forgot password?</a>
+	        <label class="checkbox">
+	          <input type="checkbox" value="remember-me"> Remember me
+	        </label>
+	        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+	    </form>
+ 	</div>
+</template>
+
+<!-- // Signup template -->
+<template name="signUpTemplate">
+	<div id="signup-form">
+		<form class="form-signin">
+		    <h2 class="form-signin-heading">Register with Feedo</h2>
+		   	<input name="username" type="text" class="form-control" placeholder="Username" autofocus>
+		    <input name="email" type="text" class="form-control" placeholder="Email address" >
+		    <input name="password" type="password" class="form-control" placeholder="Password">
+		    <input name="password_confirmation" type="password" class="form-control" placeholder="Confirm Password">
+		        <button name="signup" class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+	     </form>
+	</div>
+</template>
+
