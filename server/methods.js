@@ -10,6 +10,14 @@ File: methods.js
 /**
 Helper Methods
 **/
+// Get client IP
+function getClientIp(){
+	var app = typeof WebApp != 'undefined' ? WebApp.connectHandlers : __meteor_bootstrap__.app;
+	app.use(function(req, res, next) {
+	  console.log(req.headers);
+	  return req.headers["host"];	
+	  });
+}
 
 // Method to add Businesses in the company
 //Please validate
@@ -67,6 +75,9 @@ Meteor.methods({
 			return true;
 		else
 			return false;
+	},
+	updateUserLastLogin: function(userId){
+		return Meteor.users.update({_id: userId}, {$set: {"profile.last_login": Date.now()}});
 	}
 });
 

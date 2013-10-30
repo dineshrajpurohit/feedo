@@ -83,6 +83,18 @@ Template.navigation.dashboardActive = function(){
 	return Session.get("activateDashboard");
 }
 
+Template.navigation.events({
+	'click #logOutButton' : function(events, template){
+		if(Meteor.userId()){
+			Meteor.call("updateUserLastLogin", Meteor.userId(), function(error, result){
+				if(!error && result){
+					Meteor.logout();
+					Meteor.go("/");
+				}
+			});
+		}
+	}
+});
 /**
 
 Helpers and Event for Companies template
@@ -323,8 +335,9 @@ Helpers and events for User Dashboard template
 **/
 
 //Helper for user Dashboard
-Template.userDashboard.helpers({
+Template.shortlists.helpers({
 	'userShorlists' : function(){
+
 		var shortlists = Shortlists.find({user_id: Meteor.userId()}).fetch();
 		return shortlists.length;
 	}
@@ -352,10 +365,184 @@ Template.loginModal.events({
 });
 
 
+/**
+
+Login page helpers
+
+**/
+Template.loginPage.helpers({
+	loginError : function(){
+		return Session.get("loginError");
+	}
+});
+
+/**
+
+Login events
+
+**/
+var userValidation = function(error, reason){
+	switch(error){
+		//user trying to submit a blank username
+		case 400:
+			Session.set("loginError", "Username/Email/Password cannot be empty");
+			break;
+		// my custom errors
+		case 702:
+			Session.set("loginError", "Password should be atleast 6 characters long");
+			break;
+		case 700:
+			Session.set("loginError", "Username should be atleast 4 characters long");
+			break;
+		case 701:
+			Session.set("loginError", "Email is of invalid format");	
+			break;
+		case 703: 
+			Session.set("loginError", "Password and Confirm does not match");
+			break;	
+		case 403:
+			Session.set("loginError", reason);
+			break;
+	}
+}
+
+Template.signInTemplate.events({
+	'click #loginButton' : function(events, template){
+		event.preventDefault();
+		if(!Meteor.userId()){
+			var usernameEmail = template.find("#loginUsernameEmail").value;
+			var password = template.find("#loginPassword").value;
+
+			Meteor.loginWithPassword(usernameEmail, password, function(error){
+				if(error){
+					userValidation(error.error, error.reason);
+				}else{
+					// Add login time and ip
+					$("#loginModal").modal("hide");
+					Meteor.go("/");
+				}
+			});
+		}
+	}
+});
+
+/**
+
+Signup template helpers and events
+
+**/
+
+Template.signupPage.helpers({
+	loginError : function(){
+		return Session.get("loginError");
+	}
+});
+
+Template.signUpTemplate.events({
+	'click #signUpButton' : function(events, template){
+		event.preventDefault();
+		if(!Meteor.userId()){
+			var options = {};
+			options.username = template.find("#signupUsername").value;
+			options.email = template.find("#signupEmail").value;
+			options.password = template.find("#signupPassword").value;
+			var confirm = template.find("#password_confirmation").value;
+			//validations
+			if(options.username.length < 5) {
+				userValidation(700, "");
+				return false;
+			}
+			if(options.email == "" || options.email.indexOf("@") === -1){
+				userValidation(701, "");
+				return false;
+			}
+			if(options.password <6){
+				userValidation(702, "");
+				return false;
+			}
+			if(options.password !== confirm){
+				userValidation(703, "");
+				return false;
+			}
+
+			Accounts.createUser(options, function(error){
+				if(error){
+					userValidation(error.error, error.reason);
+				}else{
+					$("#loginModal").modal("hide");
+				}
+			});
+		}
+	}
+});
 
 
+/**
+
+Forgot Password Template
+
+**/
+
+Template.forgotPasswordPage.helpers({
+	loginError : function(){
+		return Session.get("loginError");
+	},
+		successMessage : function(){
+		return Session.get("successMessage");
+	}
+});
+
+Template.forgotPasswordPage.events({
+	'click #forgotPassButton' : function(events, template){
+		event.preventDefault();
+		var email = template.find("#forgotEmail").value;
+		if(email == "" || email.indexOf("@") === -1){
+				userValidation(701, "");
+				return false;
+			}
+		Accounts.forgotPassword({email: email}, function(error){
+			if(error){
+				userValidation(error.error, error.reason);
+			}else{
+				Session.set("loginError", false);
+				Session.set("successMessage", "Link to reset the password is sent to the email " + email);
+			}
+		});
+	}
+});
 
 
+/**
 
+Change Password Template
 
+**/
+Template.changePasswordPage.helpers({
+	loginError : function(){
+		return Session.get("loginError");
+	},
+		successMessage : function(){
+		return Session.get("successMessage");
+	}
+});
+
+Template.changePasswordPage.events({
+	'click #changePassButton' : function(events, template){
+		events.preventDefault();
+		var oldPass = template.find("#oldPassword").value;
+		var newPass = template.find("#newPassword").value;
+		if(newPass.length<6){
+			userValidation(702, "");
+			return false;
+		}
+		Accounts.changePassword(oldPass, newPass, function(error){
+			if(error){
+				userValidation(error.error, error.reason);
+			}else{
+				Session.set("loginError", false);
+				Session.set("successMessage", "Password Changed Successfully");
+			}
+		});
+	}
+});
 

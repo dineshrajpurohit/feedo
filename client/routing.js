@@ -18,7 +18,7 @@ function authorizeUser(context, page){
 		context.redirect(Meteor.unauthorizedPath());
 	}
 
-/** 2:30am === bad_code **/
+/** two_30am === bad_code **/
 function checkIsAdmin(context, page){
 	if(Meteor.userId()){
 	  var user = Meteor.user(Meteor.userId());
@@ -30,6 +30,17 @@ function checkIsAdmin(context, page){
 		context.redirect(Meteor.unauthorizedPath());
 }
 
+function resetLoginError(context, page){
+	$("#loginModal").modal("hide");
+	Session.set("loginError", false);
+	Session.set("successMessage", false);
+}
+
+function checkUserLoggedin(context, page){
+	if(Meteor.userId()){
+		context.redirect(Meteor.shortlistsPath());
+	}
+}
 
 // Change this to Iron Routing instead
 Meteor.pages({
@@ -43,9 +54,11 @@ Meteor.pages({
 	"/404" : {to: "notFound"},
 	"/about" : {to: "about", nav: "about" },
 	"/contact" : {to: "contact", nav: "contact"},
-	"/login": {to: "loginPage", nav: "login"},
-	"/signup": {to: "signupPage", nav: "signup"},
-	"/password": {to: "forgotPasswordPage"},
+	"/login": {to: "loginPage", nav: "login", before: [resetLoginError, checkUserLoggedin]},
+	"/signup": {to: "signupPage", nav: "signup", before: [resetLoginError, checkUserLoggedin]},
+	"/password": {to: "forgotPasswordPage", before: [resetLoginError, checkUserLoggedin]},
+	"/change-password": {to: "changePasswordPage", before: [resetLoginError, authorizeUser]},
+
 
 	// Dashboard routing
 	"/dashboard/shortlists" : {to: "shortlists", before: authorizeUser, nav: "dashboard"},
