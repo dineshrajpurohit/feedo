@@ -241,7 +241,6 @@ Template.writeReview.events({
 			if(userId && this._id){
 				var form = {title: title, review: review, company_id: this._id, user_id: userId, time: Date.now()};
 				Meteor.call("submitReview", form, this._id, Meteor.userId(), function(error, data){
-					console.log("error: " + error + " data" + data);
 					if(!error && data){
 						Meteor.go("/biz/" + data);
 					}
@@ -334,12 +333,48 @@ Helpers and events for User Dashboard template
 
 **/
 
+function getShortlistCompanies(sl){
+	// There is a better way to do this
+	var shortlists = [];
+	var shortlist = {}
+	var index = null;
+	for(var i=0; i< sl.length; i++){
+		var c = sl[i]["company_id"];
+		var r = sl[i]["review_id"];
+		// get company name
+		var revs = Reviews.findOne({_id:r})
+		var cname = Companies.findOne({_id: c}).name;
+		var rtitle = revs.title;
+		var rbody = revs.review;
+		var ruser = Meteor.users.findOne({_id:revs.user_id});
+		shortlist = { biz: cname, title: rtitle, review: rbody, reviewer: ruser.username}
+		shortlists.push(shortlist);	
+		// var result = $.grep(companies, function(biz, loc){ console.; return biz.cid == c}
+	}
+	return shortlists;
+}
+
 //Helper for user Dashboard
 Template.shortlists.helpers({
 	'userShorlists' : function(){
-
 		var shortlists = Shortlists.find({user_id: Meteor.userId()}).fetch();
 		return shortlists.length;
+	},
+	'shortlists' : function(){
+		var shortlists = Shortlists.find({user_id: Meteor.userId()}).fetch();
+		//console.log(getShortlistCompanies(shortlists));
+		// find a better way to do this
+		var s = getShortlistCompanies(shortlists);
+		//console.log(s);
+		var col1 =[], col2 = [];
+		for(var i=0; i<(s.length); i++){
+		//	console.log(s[i]);
+			if(i > (s.length)/2){
+				col2.push(s[i]);
+			}else
+				col1.push(s[i])
+		}
+		return [col1, col2];
 	}
 });
 
@@ -416,6 +451,7 @@ Template.signInTemplate.events({
 			Meteor.loginWithPassword(usernameEmail, password, function(error){
 				if(error){
 					userValidation(error.error, error.reason);
+					$("#loginPassword").val("");
 				}else{
 					// Add login time and ip
 					$("#loginModal").modal("hide");

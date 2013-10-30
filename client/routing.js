@@ -42,13 +42,33 @@ function checkUserLoggedin(context, page){
 	}
 }
 
+function makeSortable(){
+	$( ".column" ).sortable({
+      connectWith: ".column"
+    });
+ 
+    $( ".panel" ).addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
+      .find( ".panel-heading" )
+        .addClass( "ui-widget-header ui-corner-all" )
+        .prepend( "<span class='ui-icon ui-icon-minusthick'></span>")
+        .end()
+      .find( ".panel-body" );
+ 
+    $( ".panel-heading .ui-icon" ).click(function() {
+      $( this ).toggleClass( "ui-icon-minusthick" ).toggleClass( "ui-icon-plusthick" );
+      $( this ).parents( ".panel:first" ).find( ".panel-body" ).toggle();
+    });
+ 
+    $( ".column" ).disableSelection();
+}
+
 // Change this to Iron Routing instead
 Meteor.pages({
 	"/" : {to: "companies", nav: "home"},
 	"/biz/:_id" : { to: "showBusiness", before: setCompany, nav: "home"},
 	"/biz/:_id/review" : {to: "writeReview", before: setCompany, nav: "home"},
 	"/admin" : {to: "adminDashboard", before: checkIsAdmin, nav: "admin"},
-	"/dashboard" : {to: "shortlists", before: authorizeUser, nav: "dashboard"},
+	"/dashboard" : {to: "shortlists", before: [authorizeUser, makeSortable], nav: "dashboard"},
 	//Static pages
 	"/401" : {to: 'unauthorized'},
 	"/404" : {to: "notFound"},
@@ -61,7 +81,7 @@ Meteor.pages({
 
 
 	// Dashboard routing
-	"/dashboard/shortlists" : {to: "shortlists", before: authorizeUser, nav: "dashboard"},
+	"/dashboard/shortlists" : {to: "shortlists", before: [authorizeUser, makeSortable], nav: "dashboard"},
 	"/dashboard/approved" : {to: "approved", before: authorizeUser, nav: "approved"},
 	"/dashboard/profile" : {to: "profile", before: authorizeUser, nav: "profile"},
 	"/dashboard/reviews" : {to: "reviews", before: authorizeUser, nav: "reviews"},
