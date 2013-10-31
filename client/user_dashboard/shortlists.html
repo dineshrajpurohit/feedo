@@ -3,7 +3,7 @@
   <div style="overflow: auto">
   	<h4><p class="text-muted">You have {{userShorlists}} shorlists.</p></h4>
   	<div class="text-muted" id="drop-area">
-  		<b>Drop here to add</b>
+  		<b>Drop here to Approve the shortlist</b>
   	</div>
   </div>
 
@@ -16,6 +16,10 @@
 	    <div class="panel-body">
 	    	<h5>{{title}} - by <span class="label label-primary">{{{reviewer}}}</span></h5> 
 	    	<p>{{review}}</p>
+	    </div>
+	    <div id="approveButtons">
+	    	<button class="btn btn-success">Approve</button>
+	    	<button class="btn btn-danger">Delete</button>
 	    </div>
 	  </div>
 	 {{/each}}

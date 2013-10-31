@@ -362,19 +362,24 @@ Template.shortlists.helpers({
 	},
 	'shortlists' : function(){
 		var shortlists = Shortlists.find({user_id: Meteor.userId()}).fetch();
-		//console.log(getShortlistCompanies(shortlists));
 		// find a better way to do this
 		var s = getShortlistCompanies(shortlists);
-		//console.log(s);
 		var col1 =[], col2 = [];
 		for(var i=0; i<(s.length); i++){
-		//	console.log(s[i]);
 			if(i > (s.length)/2){
 				col2.push(s[i]);
 			}else
 				col1.push(s[i])
 		}
 		return [col1, col2];
+	}
+});
+
+Template.shortlists.events({
+	'mouseover .column': function(events, template){
+		$( ".column" ).sortable({
+      		connectWith: ".column"
+    	});
 	}
 });
 
