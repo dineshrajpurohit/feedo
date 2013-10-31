@@ -9,6 +9,15 @@ Handlebars.registerHelper("formatDate", function(datetime){
 	}
 });
 
+Handlebars.registerHelper("timeSince", function(since){
+	if(moment){
+		var today = moment(Date.now());
+		var since = moment(since);
+		return since.from(today, true);
+	}else
+		return since;
+});
+
 Handlebars.registerHelper("navClassFor", function(nav, options){
 	var n = Meteor.router.nav();
 	if(n == "profile" || n == "approved" || n == "reviews" || n == "statistics"){

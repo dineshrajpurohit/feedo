@@ -31,7 +31,6 @@ function checkIsAdmin(context, page){
 }
 
 function resetLoginError(context, page){
-	$("#loginModal").modal("hide");
 	Session.set("loginError", false);
 	Session.set("successMessage", false);
 }
@@ -40,6 +39,17 @@ function checkUserLoggedin(context, page){
 	if(Meteor.userId()){
 		context.redirect(Meteor.shortlistsPath());
 	}
+}
+
+function getUserProfile(context, page){
+	var user_id = context.params.user_id;
+	// check if user id exists else redirect to page not found
+	var user = Meteor.users.findOne({_id:user_id});
+	if(user){
+		Session.set("userProfile", user);
+	}else{
+		Meteor.go(Meteor.notFoundPath());
+	}	
 }
 
 // Change this to Iron Routing instead
@@ -66,6 +76,9 @@ Meteor.pages({
 	"/dashboard/profile" : {to: "profile", before: authorizeUser, nav: "profile"},
 	"/dashboard/reviews" : {to: "reviews", before: authorizeUser, nav: "reviews"},
 	"/dashboard/statistics" : {to: "statistics", before: authorizeUser, nav: "statistics"},
+
+	// User profiles
+	"/user/:user_id": {to: "userProfile", before: getUserProfile},
 
 	"*" : {to: "notFound"},
 

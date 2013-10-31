@@ -639,7 +639,7 @@ Template.shortlists.events({
 			Meteor.call("addApprovedlist",review,Meteor.userId(), function(error, result){
 				if(!error && result){
 					Session.set("shortlistSuccess", true);
-					Session.set("shortlistMessage", "Review has been approved. You go 10 points");
+					Session.set("shortlistMessage", "Review has been approved. You got 10 points");
 					window.setTimeout(function(){
 						fadeOutAndRemove(".shortlist-success");	
 					}, 700);
@@ -737,7 +737,7 @@ Template.approved.helpers({
 
 /**
 
-Helpers and event for user reviews
+Helpers and events for user reviews
 
 **/
 Template.reviews.helpers({
@@ -754,4 +754,46 @@ Template.reviews.helpers({
 		return reviews.reverse();
 	}
 });
+
+/**
+
+Helpers and events for private User profile
+
+**/
+Template.profile.helpers({
+	profileData: function(){
+		if(Meteor.userId()){
+			return Meteor.user();
+		}
+	}
+});
+
+/**
+
+Helpers and events for public User profile
+
+**/
+Template.userProfile.rendered = function(){
+	$("#statistics-tabs a:first").tab('show');
+	$("#statistics-tabs a").click(function(e){
+		e.preventDefault();
+		$(this).tab("show");
+	});
+}
+
+Template.userProfile.helpers({
+	profileData: function(){
+		return Session.get("userProfile");
+	},
+	userReviews: function(){
+		var user = Session.get("userProfile");
+		var userId = user._id;
+		if(userId){
+			return Reviews.find({user_id:userId},{limit: 10, sort: {time: -1}}).fetch();
+		}
+	}
+});
+
+
+
 

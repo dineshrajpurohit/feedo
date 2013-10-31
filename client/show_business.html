@@ -49,9 +49,11 @@
 						{{#if reviews this_id}}
 						{{#each reviews this._id}}
 							<li id="" class="media">
-    							<a class="pull-left" href="#">
-      								<img class="media-object" width="64" height="64" src="http://cdn2.designbyhumans.com/img/blank-user-100.gif">
-      								<small>{{review_user user_id}}</small>
+    							<a class="pull-left" href="{{userProfilePath}}">
+    								<object width="64" height="64" data="http://cdn2.designbyhumans.com/img/blank-user-100.gif">
+      									<img class="media-object" width="64" height="64" src="http://cdn2.designbyhumans.com/img/blank-user-100.gif">
+      								</object><br/>
+      								<small style="padding-left: 10px;">{{review_user user_id}}</small>
     							</a>
 	    						<div class="media-body">
 	      							<h5 class="media-heading">{{title}} <small>({{formatDate time}}) | User points: {{getUserPoints user_id}}</small></h5>
