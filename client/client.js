@@ -329,61 +329,7 @@ Template.adminDashboard.events({
 	}
 });
 
-/**
 
-Helpers and events for User Dashboard template
-
-**/
-
-function getShortlistCompanies(sl){
-	// There is a better way to do this
-	var shortlists = [];
-	var shortlist = {}
-	var index = null;
-	for(var i=0; i< sl.length; i++){
-		var c = sl[i]["company_id"];
-		var r = sl[i]["review_id"];
-		// get company name
-		var revs = Reviews.findOne({_id:r})
-		var cname = Companies.findOne({_id: c}).name;
-		var rtitle = revs.title;
-		var rbody = revs.review;
-		var ruser = Meteor.users.findOne({_id:revs.user_id});
-		shortlist = { biz: cname, title: rtitle, review: rbody, reviewer: ruser.username}
-		shortlists.push(shortlist);	
-		// var result = $.grep(companies, function(biz, loc){ console.; return biz.cid == c}
-	}
-	return shortlists;
-}
-
-//Helper for user Dashboard
-Template.shortlists.helpers({
-	'userShorlists' : function(){
-		var shortlists = Shortlists.find({user_id: Meteor.userId()}).fetch();
-		return shortlists.length;
-	},
-	'shortlists' : function(){
-		var shortlists = Shortlists.find({user_id: Meteor.userId()}).fetch();
-		// find a better way to do this
-		var s = getShortlistCompanies(shortlists);
-		var col1 =[], col2 = [];
-		for(var i=0; i<(s.length); i++){
-			if(i > (s.length)/2){
-				col2.push(s[i]);
-			}else
-				col1.push(s[i])
-		}
-		return [col1, col2];
-	}
-});
-
-Template.shortlists.events({
-	'mouseover .column': function(events, template){
-		$( ".column" ).sortable({
-      		connectWith: ".column"
-    	});
-	}
-});
 
 /**
 
@@ -522,7 +468,7 @@ Template.signUpTemplate.events({
 						$("#others").html(welcomeTemplate);
 						window.setTimeout(function(){
 							$("#welcomeModal").modal("show");
-						}, 1000);
+						}, 500);
 						
 					}
 				}
@@ -599,5 +545,192 @@ Template.changePasswordPage.events({
 			}
 		});
 	}
+});
+
+
+/**
+
+Helpers and events for User Dashboard template
+
+**/
+
+/**
+
+Template events and helpers for shortlist
+
+**/
+
+function getShortlistCompanies(sl){
+	// There is a better way to do this
+	var shortlists = [];
+	var shortlist = {}
+	var index = null;
+	for(var i=0; i< sl.length; i++){
+		var sid = sl[i]["_id"];
+		var c = sl[i]["company_id"];
+		var r = sl[i]["review_id"];
+		var revs = Reviews.findOne({_id:r})
+		var cname = Companies.findOne({_id: c}).name;
+		var rtitle = revs.title;
+		var rbody = revs.review;
+		var ruser = Meteor.users.findOne({_id:revs.user_id});
+		shortlist = {_id:sid, biz: cname, title: rtitle, review: rbody, reviewer: ruser.username}
+		shortlists.push(shortlist);	
+		// var result = $.grep(companies, function(biz, loc){ console.; return biz.cid == c}
+	}
+	return shortlists;
+}
+
+//Helper for user Dashboard
+Template.shortlists.helpers({
+	'userShortlists' : function(){
+		var shortlists = Shortlists.find({user_id: Meteor.userId()}).fetch();
+		return shortlists.length;
+	},
+	'shortlists' : function(){
+		var shortlists = Shortlists.find({user_id: Meteor.userId()}).fetch();
+		// find a better way to do this
+		var s = getShortlistCompanies(shortlists);
+		var col1 =[], col2 = [];
+		for(var i=0; i<(s.length); i++){
+			if(i > (s.length)/2){
+				col2.push(s[i]);
+			}else
+				col1.push(s[i])
+		}
+		return [col1, col2];
+	},
+	shortlistSuccess: function(){
+		return Session.get("shortlistSuccess");
+	},
+	shortlistError: function(){
+		return Session.get("shortlistError");
+	},
+	shortlistMessage: function(){
+		return Session.get("shortlistMessage");
+	}
+});
+
+Template.shortlists.events({
+	'mouseover .column': function(events, template){
+		$( ".column" ).sortable({
+      		connectWith: ".column"
+    	});
+	},
+	'click .approveButton' : function(events, template){
+		var review = Shortlists.findOne({_id:this._id});
+		if(review.user_id == Meteor.userId()){
+
+			//check if the review was already approved - if so display error
+			var findReview = Approved.findOne({review_id:review.review_id});
+			if(findReview){
+				Session.set("shortlistError", true);
+				Session.set("shortlistMessage", "This review has already been approved by you. You can delete it from your shortlists");	
+				window.setTimeout(function(){
+					fadeOutAndRemove(".shortlist-error");	
+				}, 700);
+				window.setTimeout(function(){
+					Session.set("shortlistError", false);
+					Session.set("shortlistMessage", "");
+				},2000);
+				return false;
+			}
+
+			Meteor.call("addApprovedlist",review,Meteor.userId(), function(error, result){
+				if(!error && result){
+					Session.set("shortlistSuccess", true);
+					Session.set("shortlistMessage", "Review has been approved. You go 10 points");
+					window.setTimeout(function(){
+						fadeOutAndRemove(".shortlist-success");	
+					}, 700);
+					window.setTimeout(function(){
+						Session.set("shortlistSuccess", false);
+					},2000);
+
+				}else{
+					//Will never happen - just to be on safer side
+					Session.set("shortlistError", true);
+					Session.set("shortlistMessage", "Something went wrong in approving the review. Please try again.");	
+					window.setTimeout(function(){
+						fadeOutAndRemove(".shortlist-error");	
+					}, 700);
+					window.setTimeout(function(){
+						Session.set("shortlistError", false);
+						Session.set("shortlistMessage", "");
+					},2000);
+				}
+			});			
+		}
+
+	},
+	'click .deleteButton': function(events, template){
+		// check you have the authority to delete this shortlist
+		var review = Shortlists.findOne({_id:this._id});
+		if(review.user_id == Meteor.userId()){
+			Meteor.call("deleteShorlist",this._id, function(error, result){
+				if(!error && result){
+					Session.set("shortlistSuccess", true);
+					Session.set("shortlistMessage", "Review deleted succesfully from your shorlists");
+					window.setTimeout(function(){
+						fadeOutAndRemove(".shortlist-error");	
+					}, 700);
+					window.setTimeout(function(){
+						Session.set("shortlistSuccess", false);
+						Session.set("shortlistMessage", "");
+					},2000);
+
+				}else{
+					//Will never happen - just to be on safer side
+					Session.set("shortlistError", true);	
+					Session.set("shortlistMessage", "Something went wrong in deleting the review from shortlist. Please try again.");
+					window.setTimeout(function(){
+						fadeOutAndRemove(".shortlist-error");	
+					}, 700);
+					window.setTimeout(function(){
+						Session.set("shortlistError", false);
+						Session.set("shortlistMessage", "");
+					},2000);
+				}
+			});
+		}
+	}
+});
+
+/**
+
+Halpers and events for user Approved board
+**/
+
+//Helper for user Dashboard
+function getApprovedReviews(al){
+	// There is a better way to do this
+	var aprrovedList = [];
+	var approved = {}
+	for(var i=0; i< sl.length; i++){
+		var sid = al[i]["_id"];
+		var c = al[i]["company_id"];
+		var r = al[i]["review_id"];
+		var approved_time = al[i]["approved_time"]
+		var revs = Reviews.findOne({_id:r})
+		var cname = Companies.findOne({_id: c}).name;
+		var rtitle = revs.title;
+		var rbody = revs.review;
+		var ruser = Meteor.users.findOne({_id:revs.user_id});
+		approved = {_id:sid, biz: cname, title: rtitle, review: rbody, reviewer: ruser.username, approved_time: approved_time}
+		aprrovedList.push(approved);	
+	}
+	return aprrovedList;
+}
+
+Template.approved.helpers({
+	'userApprovedlists' : function(){
+		var approvedList = Approved.find({user_id: Meteor.userId()}).fetch();
+		return approvedList.length;
+	},
+	'approvedlist' : function(){
+		var approved = Approved.find({user_id: Meteor.userId()}).fetch();
+		// find a better way to do this
+		return getShortlistCompanies(approved);
+	}	
 });
 

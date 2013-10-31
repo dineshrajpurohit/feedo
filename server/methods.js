@@ -39,6 +39,9 @@ function updateUserPoints(userId, reason){
 		case "new_review":
 			points = 10;
 			break;
+		case "approve_review":
+			points = 10;
+			break;	
 		default:
 			points = 0;
 			break;
@@ -78,6 +81,22 @@ Meteor.methods({
 	},
 	updateUserLastLogin: function(userId){
 		return Meteor.users.update({_id: userId}, {$set: {"profile.last_login": Date.now()}});
+	},
+	deleteShorlist: function(sid){
+		return Shortlists.remove({_id:sid});
+	},
+	addApprovedlist: function(review, userId){
+		//add time to approved collection
+		review.approved_time = Date.now();
+		//give points to user
+		var pointUpdated = updateUserPoints(userId, "approve_review");
+		var addApprove =  Approved.insert(review);
+		if(pointUpdated && addApprove){
+			Shortlists.remove({_id:review._id})
+			return true;
+		}
+		else
+			return false;
 	}
 });
 
