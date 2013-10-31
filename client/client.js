@@ -25,6 +25,8 @@ General helper functions
 
 **/
 
+
+
 Validation = {
 	clear: function(err){
 		return Session.set(err, undefined);
@@ -511,6 +513,18 @@ Template.signUpTemplate.events({
 					userValidation(error.error, error.reason);
 				}else{
 					$("#loginModal").modal("hide");
+
+					// welcome modal
+					var welcomeTemplate = Meteor.render(function(){
+						return Template.welcome();
+					});
+					if(welcomeTemplate){
+						$("#others").html(welcomeTemplate);
+						window.setTimeout(function(){
+							$("#welcomeModal").modal("show");
+						}, 1000);
+						
+					}
 				}
 			});
 		}
