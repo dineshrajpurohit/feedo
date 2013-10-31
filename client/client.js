@@ -406,7 +406,7 @@ Template.signInTemplate.events({
 					userValidation(error.error, error.reason);
 					$("#loginPassword").val("");
 				}else{
-					// Add login time and ip
+					// increment user login times
 					$("#loginModal").modal("hide");
 					Meteor.go("/");
 				}
@@ -732,5 +732,26 @@ Template.approved.helpers({
 		// find a better way to do this
 		return getShortlistCompanies(approved);
 	}	
+});
+
+
+/**
+
+Helpers and event for user reviews
+
+**/
+Template.reviews.helpers({
+	totalUserReviews: function(){
+		var reviews = Reviews.find({user_id: Meteor.userId()}).fetch();
+		return reviews.length
+	},
+	userReviews: function(){
+		var reviews = Reviews.find({user_id: Meteor.userId()}).fetch();
+		for(var r=0; r<(reviews.length);r++){
+			var company = Companies.findOne({_id:reviews[r]["company_id"]}).name;
+			reviews[r].biz = company
+		}
+		return reviews.reverse();
+	}
 });
 
