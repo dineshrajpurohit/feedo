@@ -4,6 +4,37 @@
 	Server for with important function to insert and update Mongo DB
 **/
 
+/**
+
+Publish users data along with email address
+
+**/
+
+// publish all users
+Meteor.publish("allUsers", function(){
+	return Meteor.users.find({});
+})
+
+//publish all companies
+Meteor.publish("companies", function(){
+	return Companies.find({});
+})
+
+//publish all reviews
+Meteor.publish("reviews", function(){
+	return Reviews.find({});
+})
+
+//publish all shortlists
+Meteor.publish("shortlists", function(){
+	return Shortlists.find({});
+})
+
+//publish all approved
+Meteor.publish("approved", function(){
+	return Approved.find({});
+})
+
 Accounts.onCreateUser(function(option, user){
 	var users = Meteor.users.find().fetch();
 	// Add user role

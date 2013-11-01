@@ -3,6 +3,7 @@
     "mini-pages": {},
     "moment": {},
     "jquery-ui": {},
-    "bootstrap-3": {}
+    "bootstrap-3": {},
+    "crypto-md5": {}
   }
 }

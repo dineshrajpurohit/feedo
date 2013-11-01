@@ -15,10 +15,8 @@
   	</div>
 	<div class="media">
 	  <a class="profile-pic pull-left" href="#">
-	  	<object data="http://cdn2.designbyhumans.com/img/blank-user-100.gif">
-	    	<img class="media-object img-rounded" src="" style="height:128px; width:128px;" />
-	    </object>
-	    <h2>{{user_points}}</h2>
+	    	<img class="media-object img-rounded" src="https://2.gravatar.com/avatar/{{userGravatar}}.jpg?s=128&d=http://cdn2.designbyhumans.com/img/blank-user-100.gif" style="height:128px; width:128px;" />
+	    <h2>{{profile.user_points}}</h2> <span id="pointsLabel">points</span>
 	  </a>
 	  <div class="media-body">
 	  	<div class="col-md-6">

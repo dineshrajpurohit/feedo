@@ -3,7 +3,7 @@ Client for Feedo - prototype
 created by: Dinesh Purohit
 
 To-DOs: 
-- Please change the term companies to businesses
+
 ****************************************************************/
 
 /**
@@ -14,6 +14,15 @@ Accounts setting
 Accounts.ui.config({
   passwordSignupFields: 'USERNAME_AND_EMAIL' 
 });
+
+/**
+Subscribe to collections
+**/
+Meteor.subscribe("allUsers");
+Meteor.subscribe("companies");
+Meteor.subscribe("reviews");
+Meteor.subscribe("shortlists");
+Meteor.subscribe("approved");
 
 /**
 All Jquery stuff
@@ -160,7 +169,6 @@ Template.showBusiness.helpers({
 	},
 	reviews: function(biz){
 		return Reviews.find({company_id: biz},{sort: {time: -1}});
-
 	},
 	shortlisted: function(reviewId){
 		var userId = Meteor.userId();
@@ -169,7 +177,13 @@ Template.showBusiness.helpers({
 			return checkShortlisted(userId, reviewId, bizId);
 		}else
 			return false;
+	},
+	userGravatar: function(userId){
+		var email = Meteor.users.findOne({_id:userId}).emails[0].address;
+		var hash = CryptoJS.MD5(email).toString();
+		return hash;
 	}
+
 });
 
 // Event from show Business template
@@ -791,6 +805,16 @@ Template.userProfile.helpers({
 		if(userId){
 			return Reviews.find({user_id:userId},{limit: 10, sort: {time: -1}}).fetch();
 		}
+	},
+	userGravatar: function(){
+		var user = Session.get("userProfile")
+		Meteor.call("md5Data", user._id, function(error, result){
+			if(!error){
+				//console.log(result + error);
+				Session.set("gravatar", result);
+			}
+		});
+		return Session.get("gravatar");
 	}
 });
 

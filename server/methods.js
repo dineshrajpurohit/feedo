@@ -97,6 +97,12 @@ Meteor.methods({
 		}
 		else
 			return false;
+	},
+	md5Data: function(data){
+		 var user = Meteor.users.findOne({_id:data});
+		 var email = user.emails[0].address;
+		 var hash = CryptoJS.MD5(email).toString();
+		 return hash;
 	}
 });
 

@@ -3,6 +3,7 @@ Meteor Mini-Pages
 Please. Please.. PLease replace this by backbone routing
 **/
 function setCompany(context, page){
+	Session.set("gravatar", "");
 	var page_id = context.params._id;
 	var company = Companies.findOne(page_id);
 	if(company)
@@ -42,6 +43,7 @@ function checkUserLoggedin(context, page){
 }
 
 function getUserProfile(context, page){
+	Session.set("gravatar", "");
 	var user_id = context.params.user_id;
 	// check if user id exists else redirect to page not found
 	var user = Meteor.users.findOne({_id:user_id});
