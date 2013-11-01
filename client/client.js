@@ -178,12 +178,6 @@ Template.showBusiness.helpers({
 		}else
 			return false;
 	},
-	userGravatar: function(userId){
-		var email = Meteor.users.findOne({_id:userId}).emails[0].address;
-		var hash = CryptoJS.MD5(email).toString();
-		return hash;
-	}
-
 });
 
 // Event from show Business template
@@ -805,16 +799,50 @@ Template.userProfile.helpers({
 		if(userId){
 			return Reviews.find({user_id:userId},{limit: 10, sort: {time: -1}}).fetch();
 		}
-	},
-	userGravatar: function(){
-		var user = Session.get("userProfile")
-		Meteor.call("md5Data", user._id, function(error, result){
-			if(!error){
-				//console.log(result + error);
-				Session.set("gravatar", result);
-			}
-		});
-		return Session.get("gravatar");
+	}
+});
+
+
+/**
+
+Template helpers and events for Edit profile
+
+**/
+Template.profileEdit.helpers({
+	profileData: function() {
+		if(Meteor.userId()){
+			return Meteor.user();
+		}
+	}
+});
+
+
+Template.profileEdit.events({
+	'submit' : function(events, template){
+		events.preventDefault();
+
+		// Get the values from form
+		var name = 	template.find("#realNname").value;
+		var location = template.find("#location").value;
+		var gravatar = template.find("#gravatar").value;
+		var website = template.find("#website").value;
+		var about = template.find("#about").value;
+
+		// Validate User data 
+		console.log(name + location + gravatar + website + about);
+
+		//if everything is fine
+
+		if(Meteor.userId){
+			Meteor.call("updateUserData",Meteor.userId(), name, location, gravatar, website, about, function(error, result){
+				if(!error){
+					console.log("User Data updated successfully");
+					Meteor.go(Meteor.profilePath());
+				}else{
+					console.log("Error:" + error);
+				}
+			});
+		}
 	}
 });
 

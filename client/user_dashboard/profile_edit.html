@@ -1,0 +1,53 @@
+<template name="profileEdit">
+  {{> userDashboard}}
+  <div class="edit-profile">
+  	{{#with profileData}}
+  	  <div class="user-header">
+  	  	{{#if profile.real_name}}
+  	  	<h3>{{profile.real_name}} / Edit</h3>
+  	  	{{else}}
+  		<h3>{{username}} / Edit</h3>
+  		{{/if}}
+  		<div class="user-links">
+  			<a href="{{profileEditPath}}">edit</a>
+  			<a href="">preferences</a>  		
+  		</div>
+  	</div>
+	<div class="media">
+	  	<a class="profile-pic pull-left" href="https://en.gravatar.com/" target="_blank"><br/>
+	  		<img id="profile-image" class="media-object img-rounded" src="https://2.gravatar.com/avatar/{{userGravatar _id}}.jpg?s=128&d=http://cdn2.designbyhumans.com/img/blank-user-100.gif" style="height:128px; width:128px;" />
+	    	 <span>Change profile picture<br/> using Gravatar</span>
+	  	</a>
+	  <div class="media-body">
+		  <div id="" class="col-md-8" style="padding-left: 50px">
+		  	<form name="edit" id="edit-form" role="form">
+				  <div class="form-group">
+				    <label>Name</label>
+			    	<input class="form-control" name="realName" id="realNname" type="text" placeholder="Name" value="{{profile.real_name}}" />
+				  </div>
+				  <div class="form-group">
+				     <label>Location</label>
+			    	<input class="form-control" name="location" id="location" type="text" placeholder="Location" value="{{profile.location}}"><br/>
+			       <div class="form-group">
+				    <label>Gravatar Email</label><br/>
+				    <input class="form-control" name="gravatarEmail" id="gravatar" type="text" placeholder="Gravatar email for profile pic" value="{{profile.gravatar_email}}">
+				  </div>
+				  <div class="form-group">
+				    <label>Website</label><br/>
+				    <input class="form-control" name="website" id="website" type="text" placeholder="My Blog or Website" value="{{profile.website}}">
+				  </div>
+				  <div class="form-group">
+				  	<label>About me</label><br/>
+					<textarea id="about" class="form-control" rows="5">{{profile.about_me}}</textarea>
+				  </div>
+				  <br/>
+				 	<button type="submit" class="btn btn-primary">Submit</button>
+			    	<a href="{{profilePath}}" class="btn" id="cancel_edit_user">Cancel</a>
+				</form>
+		  	</div>
+		   </div>
+	  </div>
+	</div>
+	{{/with}}
+  </div>
+</template>

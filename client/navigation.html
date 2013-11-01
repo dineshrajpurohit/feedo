@@ -30,7 +30,8 @@
           <ul class="nav navbar-nav navbar-right">
             {{#if logged_in}}
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <a id="userLoginName" href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <img class="media-object img-rounded" src="https://2.gravatar.com/avatar/{{userGravatar currentUser._id}}.jpg?s=30&d=http://cdn2.designbyhumans.com/img/blank-user-100.gif" style="height:30px; width:30px;" />
                   {{currentUser.username}}
                   <b class="caret"></b></a>
                 <ul class="dropdown-menu" style="z-index: 10;">

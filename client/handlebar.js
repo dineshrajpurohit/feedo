@@ -35,8 +35,11 @@ Handlebars.registerHelper("get_reviews_count", function(biz){
 });
 
 Handlebars.registerHelper("review_user", function(user_id){
-	var userInfo = Meteor.users.findOne({_id: user_id},{fields: {username: 1}});
-	return userInfo.username;
+	var userInfo = Meteor.users.findOne({_id: user_id});
+	if(userInfo.profile.real_name)
+		return userInfo.profile.real_name;
+	else
+		return userInfo.username;
 	//return (userInfo.username != undefined) ? userInfo.username : "";
 });
 
@@ -44,5 +47,11 @@ Handlebars.registerHelper("review_user", function(user_id){
 Handlebars.registerHelper("getUserPoints", function(user_id){
 	var userInfo = Meteor.users.findOne({_id: user_id},{fields: {profile: 1}});
 	return userInfo.profile.user_points;
+});
+
+Handlebars.registerHelper("userGravatar", function(userId){
+	var email = Meteor.users.findOne({_id:userId}).profile.gravatar_email;
+	var hash = CryptoJS.MD5(email).toString();
+	return hash;
 });
 

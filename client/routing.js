@@ -76,6 +76,7 @@ Meteor.pages({
 	"/dashboard/shortlists" : {to: "shortlists", before: [authorizeUser], nav: "dashboard"},
 	"/dashboard/approved" : {to: "approved", before: authorizeUser, nav: "approved"},
 	"/dashboard/profile" : {to: "profile", before: authorizeUser, nav: "profile"},
+	"/dashboard/profile/edit" : {to: "profileEdit", before: authorizeUser, nav: "profileEdit"},
 	"/dashboard/reviews" : {to: "reviews", before: authorizeUser, nav: "reviews"},
 	"/dashboard/statistics" : {to: "statistics", before: authorizeUser, nav: "statistics"},
 

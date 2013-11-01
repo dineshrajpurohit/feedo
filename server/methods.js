@@ -98,11 +98,14 @@ Meteor.methods({
 		else
 			return false;
 	},
-	md5Data: function(data){
-		 var user = Meteor.users.findOne({_id:data});
-		 var email = user.emails[0].address;
-		 var hash = CryptoJS.MD5(email).toString();
-		 return hash;
+	updateUserData: function(userId, name, location, gravatar, website, about){
+		return Meteor.users.update({_id:userId}, 
+				{$set: {"profile.real_name": name,
+						"profile.location" : location,
+						"profile.gravatar_email": gravatar,
+				    	"profile.website": website,
+				    	"profile.about_me": about
+				}});
 	}
 });
 
