@@ -6,6 +6,56 @@
 
 /**
 
+Allow Deny rules for client
+
+**/
+function adminUser(userId){
+	var admin = Meteor.users.findOne({"profile.role":"admin"});
+	return (userId && admin && userId === admin._id);
+}
+
+Companies.allow({
+	insert: function(userId, doc){
+		return adminUser(userId);
+	},
+	update: function(userId, docs, fields, modifier){
+		return adminUser(userId);
+	}
+});
+
+Reviews.allow({
+	insert: function(userId, review){
+		console.log("User: " + userId + " Review " + review.owner);
+		return userId && review.owner === userId;
+	}
+});
+
+Shortlists.allow({
+	insert: function(userId, shortlist){
+		return userId && shortlist.user_id === userId;
+	},
+	remove: function(userId, shortlist){
+		return userId && shortlist.user_id === userId;
+	},
+	update: function(userId, shortlist){
+		return userId && shortlist.user_id === userId;
+	}
+});
+
+Shortlists.allow({
+	insert: function(userId, approved){
+		return userId && approved.user_id === userId;
+	},
+	remove: function(userId, approved){
+		return userId && approved.user_id === userId;
+	},
+	update: function(userId, approved){
+		return userId && approved.user_id === userId;
+	}
+});
+
+/**
+
 Publish users data along with email address
 
 **/

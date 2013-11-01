@@ -1,6 +1,11 @@
 <template name="profile">
   {{> userDashboard}}
   <div>
+  	
+  	{{#if successMessage}}
+ 	<div class='success-message'>{{successMessage}}</div><br/>
+ 	{{/if}}
+
   	{{#with profileData}}
   	  <div class="user-header">
   	  	{{#if profile.real_name}}

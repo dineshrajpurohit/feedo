@@ -7,24 +7,6 @@ To-DOs:
 ****************************************************************/
 
 /**
-Accounts setting
-
-**/
-
-Accounts.ui.config({
-  passwordSignupFields: 'USERNAME_AND_EMAIL' 
-});
-
-/**
-Subscribe to collections
-**/
-Meteor.subscribe("allUsers");
-Meteor.subscribe("companies");
-Meteor.subscribe("reviews");
-Meteor.subscribe("shortlists");
-Meteor.subscribe("approved");
-
-/**
 All Jquery stuff
 **/
 
@@ -33,9 +15,6 @@ All Jquery stuff
 General helper functions
 
 **/
-
-
-
 Validation = {
 	clear: function(err){
 		return Session.set(err, undefined);
@@ -57,19 +36,6 @@ Validation = {
 		}
 	}
 };
-
-function printObjArr(obj){
-	for(o in obj){
-		console.log(o.toString());
-	}
-}
-
-
-function fadeOutAndRemove(item){
-	$(item).delay(1000).fadeOut("fast", function(){
-		$(this).remove();
-	})
-}
 
 /**
 
@@ -607,15 +573,6 @@ Template.shortlists.helpers({
 				col1.push(s[i])
 		}
 		return [col1, col2];
-	},
-	shortlistSuccess: function(){
-		return Session.get("shortlistSuccess");
-	},
-	shortlistError: function(){
-		return Session.get("shortlistError");
-	},
-	shortlistMessage: function(){
-		return Session.get("shortlistMessage");
 	}
 });
 
@@ -632,29 +589,13 @@ Template.shortlists.events({
 			//check if the review was already approved - if so display error
 			var findReview = Approved.findOne({$and: [{review_id: review.review_id}, {user_id: Meteor.userId()}]});
 			if(findReview){
-				Session.set("shortlistError", true);
-				Session.set("shortlistMessage", "This review has already been approved by you. You can delete it from your shortlists");	
-				window.setTimeout(function(){
-					fadeOutAndRemove(".shortlist-error");	
-				}, 700);
-				window.setTimeout(function(){
-					Session.set("shortlistError", false);
-					Session.set("shortlistMessage", "");
-				},2000);
+				globalErrorMessage("This review has already been approved by you. You can delete it from your shortlists");
 				return false;
 			}
 
 			Meteor.call("addApprovedlist",review,Meteor.userId(), function(error, result){
 				if(!error && result){
-					Session.set("shortlistSuccess", true);
-					Session.set("shortlistMessage", "Review has been approved. You got 10 points");
-					window.setTimeout(function(){
-						fadeOutAndRemove(".shortlist-success");	
-					}, 700);
-					window.setTimeout(function(){
-						Session.set("shortlistSuccess", false);
-					},2000);
-
+					globalSuccessMessage("Review has been approved. You got 10 points");
 				}else{
 					//Will never happen - just to be on safer side
 					Session.set("shortlistError", true);
@@ -677,27 +618,10 @@ Template.shortlists.events({
 		if(review.user_id == Meteor.userId()){
 			Meteor.call("deleteShorlist",this._id, function(error, result){
 				if(!error && result){
-					Session.set("shortlistSuccess", true);
-					Session.set("shortlistMessage", "Review deleted succesfully from your shorlists");
-					window.setTimeout(function(){
-						fadeOutAndRemove(".shortlist-error");	
-					}, 700);
-					window.setTimeout(function(){
-						Session.set("shortlistSuccess", false);
-						Session.set("shortlistMessage", "");
-					},2000);
-
+					globalErrorMessage("Review deleted succesfully from your shorlists");
 				}else{
 					//Will never happen - just to be on safer side
-					Session.set("shortlistError", true);	
-					Session.set("shortlistMessage", "Something went wrong in deleting the review from shortlist. Please try again.");
-					window.setTimeout(function(){
-						fadeOutAndRemove(".shortlist-error");	
-					}, 700);
-					window.setTimeout(function(){
-						Session.set("shortlistError", false);
-						Session.set("shortlistMessage", "");
-					},2000);
+					globalErrorMessage("Something went wrong in deleting the review from shortlist. Please try again.");
 				}
 			});
 		}
@@ -834,7 +758,7 @@ Template.profileEdit.events({
 		if(Meteor.userId){
 			Meteor.call("updateUserData",Meteor.userId(), name, location, gravatar, website, about, function(error, result){
 				if(!error){
-					console.log("User Data updated successfully");
+					globalSuccessMessage("Profile Edited succesfully");
 					Meteor.go(Meteor.profilePath());
 				}else{
 					console.log("Error:" + error);
