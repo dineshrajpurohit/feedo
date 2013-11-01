@@ -21,7 +21,15 @@
 	  <div class="panel panel-info">
 	    <div class="panel-heading">{{biz}}</div>
 	    <div class="panel-body">
-	    	<h5>{{title}} - by <span class="label label-primary">{{{reviewer}}}</span></h5> 
+	    	<h5>{{title}} - by 
+	    		<span class="label label-primary">
+	    			{{#if real_reviewer}}
+	    				{{real_reviewer}}
+	    			{{else}}
+	    				{{reviewer}}
+	    			{{/if}}	
+	    		</span>
+	    	</h5> 
 	    	<p>{{review}}</p>
 	    </div>
 	    <div id="approveButtons">

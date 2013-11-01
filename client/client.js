@@ -582,7 +582,7 @@ function getShortlistCompanies(sl){
 		var rtitle = revs.title;
 		var rbody = revs.review;
 		var ruser = Meteor.users.findOne({_id:revs.user_id});
-		shortlist = {_id:sid, biz: cname, title: rtitle, review: rbody, reviewer: ruser.username}
+		shortlist = {_id:sid, biz: cname, title: rtitle, review: rbody, reviewer: ruser.username, real_reviewer: ruser.profile.real_name};
 		shortlists.push(shortlist);	
 		// var result = $.grep(companies, function(biz, loc){ console.; return biz.cid == c}
 	}
@@ -630,7 +630,7 @@ Template.shortlists.events({
 		if(review.user_id == Meteor.userId()){
 
 			//check if the review was already approved - if so display error
-			var findReview = Approved.findOne({review_id:review.review_id});
+			var findReview = Approved.findOne({$and: [{review_id: review.review_id}, {user_id: Meteor.userId()}]});
 			if(findReview){
 				Session.set("shortlistError", true);
 				Session.set("shortlistMessage", "This review has already been approved by you. You can delete it from your shortlists");	
@@ -738,7 +738,7 @@ Template.approved.helpers({
 	'approvedlist' : function(){
 		var approved = Approved.find({user_id: Meteor.userId()}).fetch();
 		// find a better way to do this
-		return getShortlistCompanies(approved);
+		return getShortlistCompanies(approved.reverse());
 	}	
 });
 
@@ -828,9 +828,7 @@ Template.profileEdit.events({
 		var website = template.find("#website").value;
 		var about = template.find("#about").value;
 
-		// Validate User data 
-		console.log(name + location + gravatar + website + about);
-
+		// Validate User data
 		//if everything is fine
 
 		if(Meteor.userId){

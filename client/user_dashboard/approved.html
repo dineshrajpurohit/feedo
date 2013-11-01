@@ -8,7 +8,14 @@
 	  <div class="panel panel-success">
 	    <div class="panel-heading">{{biz}}</div>
 	    <div class="panel-body">
-	    	<h5>{{title}} - by <span class="label label-primary">{{{reviewer}}}</span></h5> 
+	    	<h5>{{title}} - by 
+	    		<span class="label label-primary">
+	    			{{#if real_reviewer}}
+	    				{{real_reviewer}}
+	    			{{else}}
+	    				{{reviewer}}
+	    			{{/if}}	
+	    		</span></h5> 
 	    	<span class="text-muted">approved on {{formatDate approved_time}}</span><br><br/>
 	    	<p>{{review}}</p>
 	    </div>
