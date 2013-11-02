@@ -311,6 +311,11 @@ Template.adminDashboard.events({
 Helper and events for login Modal template
 
 **/
+Template.loginModal.helpers({
+	loginError : function(){
+		return Session.get("loginError");
+	}
+});
 
 Template.loginModal.events({
 	'click #modalSignupButton' : function(event, template){
@@ -434,6 +439,9 @@ Template.signUpTemplate.events({
 					userValidation(error.error, error.reason);
 				}else{
 					$("#loginModal").modal("hide");
+
+					//Add user points to user log
+					Meteor.call("addCreateuserPoints", Meteor.userId());
 
 					// welcome modal
 					var welcomeTemplate = Meteor.render(function(){

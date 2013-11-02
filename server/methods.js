@@ -127,6 +127,9 @@ Meteor.methods({
 				    	"profile.website": website,
 				    	"profile.about_me": about
 				}});
+	},
+	addCreateuserPoints: function(userId){
+		return Userpoints.insert({user_id: userId, status: "+", points: 20, message: "- for creating a new account", added_on: Date.now()});
 	}
 });
 

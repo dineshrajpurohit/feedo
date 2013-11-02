@@ -78,6 +78,11 @@
           <h4 class="modal-title">Please login to shortlist or post the review</h4>
         </div>
         <div class="modal-body">
+        	    {{#if loginError}}
+					<div id="loginError" class="alert alert-danger alert-dismissable">
+				 {{loginError}}
+					</div>
+				  {{/if}}
 	       		{{> signUpTemplate}}
 	       		{{> signInTemplate}}
          </div>
