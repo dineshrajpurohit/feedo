@@ -28,25 +28,41 @@ function insertBiz(company){
 	return true;
 }
 
+// Function to add userpoints
+function updatePointsLog(userId, status, points,message){
+		return Userpoints.insert({user_id: userId, status: status, points: points, message: message, added_on: Date.now()});
+	}
+
 
 /**
 User Points: 
 New Review : 10 points
 **/
 function updateUserPoints(userId, reason){
-	var points = 0;
+	var points = 0, status="", message="";
 	switch(reason){
 		case "new_review":
-			points = 10;
+			points = 20;
+			status = "+";
+			message = "- for creating a new review";
 			break;
 		case "approve_review":
 			points = 10;
-			break;	
+			status = "+";
+			message = "- for approving a review";
+			break;
+		case "review_approved":
+			points = 20;
+			status = "+";
+			message = "- your review got approved";
+			break;		
 		default:
 			points = 0;
 			break;
 	}
-	return Meteor.users.update({_id:userId}, {$inc: {"profile.user_points" : points}});
+	var updateLog = updatePointsLog(userId, status, points, message);
+	var updatePoints = Meteor.users.update({_id:userId}, {$inc: {"profile.user_points" : points}});
+	return updateLog && updatePoints;
 }
 
 /**
@@ -88,8 +104,13 @@ Meteor.methods({
 	addApprovedlist: function(review, userId){
 		//add time to approved collection
 		review.approved_time = Date.now();
+
+		// Whose review is this
+		var reviewer = Reviews.findOne({_id: review.review_id}, {fields: {user_id: 1}});
+		
 		//give points to user
 		var pointUpdated = updateUserPoints(userId, "approve_review");
+		var logUpdated = updateUserPoints(reviewer.user_id, "review_approved");
 		var addApprove =  Approved.insert(review);
 		if(pointUpdated && addApprove){
 			Shortlists.remove({_id:review._id})

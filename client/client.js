@@ -65,6 +65,7 @@ Template.navigation.events({
 		if(Meteor.userId()){
 			Meteor.call("updateUserLastLogin", Meteor.userId(), function(error, result){
 				if(!error && result){
+					// wierd error on two client temp fix
 					Meteor.logout();
 					Meteor.go("/");
 				}
@@ -593,7 +594,7 @@ Template.shortlists.events({
 				return false;
 			}
 
-			Meteor.call("addApprovedlist",review,Meteor.userId(), function(error, result){
+			Meteor.call("addApprovedlist",review, Meteor.userId(), function(error, result){
 				if(!error && result){
 					globalSuccessMessage("Review has been approved. You got 10 points");
 				}else{
@@ -618,7 +619,7 @@ Template.shortlists.events({
 		if(review.user_id == Meteor.userId()){
 			Meteor.call("deleteShorlist",this._id, function(error, result){
 				if(!error && result){
-					globalErrorMessage("Review deleted succesfully from your shorlists");
+					globalSuccessMessage("Review deleted succesfully from your shorlists");
 				}else{
 					//Will never happen - just to be on safer side
 					globalErrorMessage("Something went wrong in deleting the review from shortlist. Please try again.");
@@ -768,6 +769,20 @@ Template.profileEdit.events({
 	}
 });
 
+
+/**
+
+Template and helper for user logs
+
+**/
+
+Template.statistics.helpers({
+	userlogs: function(){
+		if(Meteor.userId()){
+			return Userpoints.find({user_id: Meteor.userId()}, {sort: {added_on: -1}}).fetch();
+		}
+	}
+});
 
 
 

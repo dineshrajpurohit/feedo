@@ -19,38 +19,48 @@ Companies.allow({
 		return adminUser(userId);
 	},
 	update: function(userId, docs, fields, modifier){
-		return adminUser(userId);
+		return _.all(docs, function(doc){
+			return adminUser(userId);
+		});		
 	}
 });
 
 Reviews.allow({
-	insert: function(userId, review){
-		console.log("User: " + userId + " Review " + review.owner);
-		return userId && review.owner === userId;
+	insert: function(userId, doc){
+		console.log("User: " + userId + " Review " + doc.owner);
+		return userId && doc.owner === userId;
 	}
 });
 
 Shortlists.allow({
-	insert: function(userId, shortlist){
-		return userId && shortlist.user_id === userId;
+	insert: function(userId, doc){
+		return userId && doc.user_id === userId;
 	},
-	remove: function(userId, shortlist){
-		return userId && shortlist.user_id === userId;
+	remove: function(userId, doc){
+		return _.all(docs, function(doc){
+			return userId && doc.user_id === userId;
+		});
 	},
-	update: function(userId, shortlist){
-		return userId && shortlist.user_id === userId;
+	update: function(userId, docs, fields, modifier){
+		return _.all(docs, function(doc){
+			return userId && doc.user_id === userId;
+		});
 	}
 });
 
 Shortlists.allow({
-	insert: function(userId, approved){
-		return userId && approved.user_id === userId;
+	insert: function(userId, doc){
+		return userId && doc.user_id === userId;
 	},
-	remove: function(userId, approved){
-		return userId && approved.user_id === userId;
+	remove: function(userId, doc){
+		return _.all(docs, function(doc){
+			return userId && doc.user_id === userId;
+		});
 	},
-	update: function(userId, approved){
-		return userId && approved.user_id === userId;
+	update: function(userId, docs, fields, modifier){
+		return _.all(docs, function(doc){
+			return userId && doc.user_id === userId;
+		});	
 	}
 });
 
@@ -80,11 +90,21 @@ Meteor.publish("shortlists", function(){
 	return Shortlists.find({});
 })
 
-//publish all approved
+//publish all approved (dont know why data do not load when supplied user_id)
 Meteor.publish("approved", function(){
-	return Approved.find({});
+	return Approved.find();
 })
 
+// Publish the user points log to the users loggedin
+Meteor.publish("userpoints", function(){
+	return Userpoints.find();
+});
+
+/**
+
+When user is forst created
+
+**/
 Accounts.onCreateUser(function(option, user){
 	var users = Meteor.users.find().fetch();
 	// Add user role

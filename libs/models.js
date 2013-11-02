@@ -13,6 +13,7 @@ Companies = new Meteor.Collection("companies");
 Reviews = new Meteor.Collection("reviews");
 Shortlists = new Meteor.Collection("shortlists");
 Approved = new Meteor.Collection("approved");
+Userpoints = new Meteor.Collection("userpoints");
 
 function printObjArr(obj){
 	for(o in obj){

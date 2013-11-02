@@ -26,3 +26,4 @@ Meteor.subscribe("companies");
 Meteor.subscribe("reviews");
 Meteor.subscribe("shortlists");
 Meteor.subscribe("approved");
+Meteor.subscribe("userpoints");

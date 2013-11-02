@@ -1,0 +1,12 @@
+<template name="statistics">
+  {{> userDashboard}}
+  <div is="userLogs">
+  	<ul class="list-group">
+  		{{#each userlogs}}
+	   <li class="list-group-item">
+	   		<span class="text-success">{{status}}{{points}} {{message}}</span> - <span class="text-muted">{{timeSince added_on}} ago</span>
+	   </li>
+		{{/each}}
+	</ul>
+  </div>
+</template>
