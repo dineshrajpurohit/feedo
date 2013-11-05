@@ -43,10 +43,6 @@ Helpers and events for Navigation template
 
 **/
 
-Template.navigation.logged_in = function(){
-	return Meteor.userId() ? true : false;
-}
-
 Template.navigation.isAdmin = function(){
 	var userId = Meteor.userId();
 	if(userId){
@@ -63,7 +59,7 @@ Template.navigation.dashboardActive = function(){
 Template.navigation.events({
 	'click #logOutButton' : function(events, template){
 		if(Meteor.userId()){
-			Meteor.call("updateUserLastLogin", Meteor.userId(), function(error, result){
+			Meteor.call("updateUserLastLogin", function(error, result){
 				if(!error && result){
 					// wierd error on two client temp fix
 					Meteor.logout();
@@ -165,7 +161,7 @@ Template.showBusiness.events({
 
 			var isSlPresent = checkShortlisted(userId, reviewId, bizId);		
 			if(!isSlPresent){
-				Meteor.call("addReviewToShortlist", userId, reviewId, bizId, function(error, data){
+				Meteor.call("addReviewToShortlist", reviewId, bizId, function(error, data){
 					if(!error && data){
 						//console.log("Added to shortlist");
 					}
@@ -217,7 +213,7 @@ Template.writeReview.events({
 		if(title && review){
 			if(userId && this._id){
 				var form = {title: title, review: review, company_id: this._id, user_id: userId, time: Date.now()};
-				Meteor.call("submitReview", form, this._id, Meteor.userId(), function(error, data){
+				Meteor.call("submitReview", form,this._id, function(error, data){
 					if(!error && data){
 						Meteor.go("/biz/" + data);
 					}
@@ -441,7 +437,7 @@ Template.signUpTemplate.events({
 					$("#loginModal").modal("hide");
 
 					//Add user points to user log
-					Meteor.call("addCreateuserPoints", Meteor.userId());
+					Meteor.call("addCreateuserPoints");
 
 					// welcome modal
 					var welcomeTemplate = Meteor.render(function(){
@@ -602,7 +598,7 @@ Template.shortlists.events({
 				return false;
 			}
 
-			Meteor.call("addApprovedlist",review, Meteor.userId(), function(error, result){
+			Meteor.call("addApprovedlist",review, function(error, result){
 				if(!error && result){
 					globalSuccessMessage("Review has been approved. You got 10 points");
 				}else{
@@ -625,7 +621,7 @@ Template.shortlists.events({
 		// check you have the authority to delete this shortlist
 		var review = Shortlists.findOne({_id:this._id});
 		if(review.user_id == Meteor.userId()){
-			Meteor.call("deleteShorlist",this._id, function(error, result){
+			Meteor.call("deleteShorlist", function(error, result){
 				if(!error && result){
 					globalSuccessMessage("Review deleted succesfully from your shorlists");
 				}else{
@@ -696,18 +692,6 @@ Template.reviews.helpers({
 	}
 });
 
-/**
-
-Helpers and events for private User profile
-
-**/
-Template.profile.helpers({
-	profileData: function(){
-		if(Meteor.userId()){
-			return Meteor.user();
-		}
-	}
-});
 
 /**
 
@@ -741,14 +725,6 @@ Template.userProfile.helpers({
 Template helpers and events for Edit profile
 
 **/
-Template.profileEdit.helpers({
-	profileData: function() {
-		if(Meteor.userId()){
-			return Meteor.user();
-		}
-	}
-});
-
 
 Template.profileEdit.events({
 	'submit' : function(events, template){
@@ -765,7 +741,7 @@ Template.profileEdit.events({
 		//if everything is fine
 
 		if(Meteor.userId){
-			Meteor.call("updateUserData",Meteor.userId(), name, location, gravatar, website, about, function(error, result){
+			Meteor.call("updateUserData", name, location, gravatar, website, about, function(error, result){
 				if(!error){
 					globalSuccessMessage("Profile Edited succesfully");
 					Meteor.go(Meteor.profilePath());

@@ -14,12 +14,12 @@
           <ul class="nav navbar-nav">
             <li class="{{navClassFor 'home'}}"><a href="{{companiesPath}}">
               <span class="glyphicon glyphicon-home"></span>  Home</a></li>
-            {{#if logged_in}}
+            {{#if currentUser}}
 	            {{#if isAdmin}}
 	            <li class="{{navClassFor 'admin'}}" ><a id="admin" href="{{adminDashboardPath}}">
                 <span class="glyphicon glyphicon-wrench"></span> Admin Dashboard</a></li>
 	         	{{/if}}
-	         	<li class="{{navClassFor 'dashboard'}} {{dashboardActive}}" ><a id="dashboard" href="{{shortlistsPath}}">
+	         	<li class="{{navClassFor 'dashboard'}} {{dashboardActive}}" ><a id="dashboard" href="{{profilePath}}">
               <span class="glyphicon glyphicon-briefcase"></span> Dashboard</a></li>
 	         {{/if}}
 	        <li class="{{navClassFor 'about'}}" ><a id="about" href="{{aboutPath}}">
@@ -28,7 +28,7 @@
             <span class="glyphicon glyphicon-phone-alt"></span> Contact</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            {{#if logged_in}}
+            {{#if currentUser}}
               <li class="dropdown">
                 <a id="userLoginName" href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <img class="media-object img-rounded" src="https://2.gravatar.com/avatar/{{userGravatar currentUser._id}}.jpg?s=30&d=http://cdn2.designbyhumans.com/img/blank-user-100.gif" style="height:30px; width:30px;" />

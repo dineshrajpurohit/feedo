@@ -67,7 +67,7 @@ Meteor.pages({
 	"/biz/:_id" : { to: "showBusiness", before: [beforeDefault, setCompany], nav: "home"},
 	"/biz/:_id/review" : {to: "writeReview", before: [beforeDefault, setCompany], nav: "home"},
 	"/admin" : {to: "adminDashboard", before: [beforeDefault, checkIsAdmin], nav: "admin"},
-	"/dashboard" : {to: "shortlists", before: [beforeDefault, authorizeUser], nav: "dashboard"},
+	"/dashboard" : {to: "profile", before: [beforeDefault, authorizeUser], nav: "dashboard"},
 	//Static pages
 	"/401" : {to: 'unauthorized'},
 	"/404" : {to: "notFound"},
@@ -80,9 +80,9 @@ Meteor.pages({
 
 
 	// Dashboard routing
-	"/dashboard/shortlists" : {to: "shortlists", before: [beforeDefault, authorizeUser], nav: "dashboard"},
+	"/dashboard/shortlists" : {to: "shortlists", before: [beforeDefault, authorizeUser], nav: "shortlists"},
 	"/dashboard/approved" : {to: "approved", before: [beforeDefault, authorizeUser], nav: "approved"},
-	"/dashboard/profile" : {to: "profile", before: [beforeDefault, authorizeUser], nav: "profile"},
+	"/dashboard/profile" : {to: "profile", before: [beforeDefault, authorizeUser], nav: "dashboard"},
 	"/dashboard/profile/edit" : {to: "profileEdit", before: [beforeDefault, authorizeUser], nav: "profileEdit"},
 	"/dashboard/reviews" : {to: "reviews", before: [beforeDefault, authorizeUser], nav: "reviews"},
 	"/dashboard/statistics" : {to: "statistics", before: [beforeDefault, authorizeUser], nav: "statistics"},

@@ -1,7 +1,7 @@
 <template name="profileEdit">
   {{> userDashboard}}
   <div class="edit-profile">
-  	{{#with profileData}}
+  	{{#with currentUser}}
   	  <div class="user-header">
   	  	{{#if profile.real_name}}
   	  	<h3>{{profile.real_name}} / Edit</h3>

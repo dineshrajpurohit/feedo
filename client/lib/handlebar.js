@@ -20,7 +20,7 @@ Handlebars.registerHelper("timeSince", function(since){
 
 Handlebars.registerHelper("navClassFor", function(nav, options){
 	var n = Meteor.router.nav();
-	if(n == "profile" || n == "approved" || n == "reviews" || n == "statistics"){
+	if(n == "shortlists" || n == "approved" || n == "reviews" || n == "statistics"){
 		Session.set("activateDashboard", "active");
 	}else{
 		Session.set("activateDashboard", "");
