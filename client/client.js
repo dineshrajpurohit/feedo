@@ -621,7 +621,7 @@ Template.shortlists.events({
 		// check you have the authority to delete this shortlist
 		var review = Shortlists.findOne({_id:this._id});
 		if(review.user_id == Meteor.userId()){
-			Meteor.call("deleteShorlist", function(error, result){
+			Meteor.call("deleteShorlist",this._id, function(error, result){
 				if(!error && result){
 					globalSuccessMessage("Review deleted succesfully from your shorlists");
 				}else{
