@@ -7,7 +7,6 @@ standard-app-packages
 preserve-inputs
 mini-pages
 less
-moment
 accounts-password
 accounts-ui
 jquery
